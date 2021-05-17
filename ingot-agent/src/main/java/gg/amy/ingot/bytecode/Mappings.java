@@ -23,6 +23,12 @@ public enum Mappings {
     }
 
     @Nonnull
+    public static Mappings byVersion(@Nonnull final String version) {
+        final var up = 'V' + version.replace('.', '_');
+        return valueOf(up);
+    }
+
+    @Nonnull
     public String client() {
         return client;
     }
@@ -30,11 +36,5 @@ public enum Mappings {
     @Nonnull
     public String server() {
         return server;
-    }
-
-    @Nonnull
-    public static Mappings byVersion(@Nonnull final String version) {
-        final var up = 'V' + version.replace('.', '_');
-        return valueOf(up)  ;
     }
 }

@@ -4,7 +4,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
-import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.util.CheckClassAdapter;
 
@@ -16,29 +15,11 @@ import java.security.ProtectionDomain;
  * @author amy
  * @since 5/16/21.
  */
-public abstract class Injector implements ClassFileTransformer, Opcodes {
+public abstract class Injector extends BytecodeMangler implements ClassFileTransformer {
     protected final Logger logger = LogManager.getLogger();
-    private final String classToInject;
 
     protected Injector(final String classToInject) {
-        this.classToInject = $(classToInject);
-    }
-
-    @SuppressWarnings("SameParameterValue")
-    protected static String $(final Class<?> c) {
-        return $(c.getName());
-    }
-
-    protected static String $(final String s) {
-        return s.replace('/', '$').replace('.', '/');
-    }
-
-    protected static String $$(final Class<?> c) {
-        return $$(c.getName());
-    }
-
-    protected static String $$(final String s) {
-        return 'L' + $(s) + ';';
+        super(classToInject);
     }
 
     @Override
@@ -67,8 +48,4 @@ public abstract class Injector implements ClassFileTransformer, Opcodes {
     }
 
     protected abstract void inject(ClassReader cr, ClassNode cn);
-
-    public String classToInject() {
-        return classToInject;
-    }
 }

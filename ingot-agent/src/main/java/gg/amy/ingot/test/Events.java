@@ -1,5 +1,6 @@
 package gg.amy.ingot.test;
 
+import gg.amy.ingot.api.ClientBrandRetriever;
 import gg.amy.ingot.api.Minecraft;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,7 +18,7 @@ public final class Events {
 
     public static void gameStarted() {
         LOGGER.info("#################################################################");
-        LOGGER.info("ingot running on version {}", Minecraft.getInstance().getVersion());
+        LOGGER.info("ingot running on version {} ({})", Minecraft.getInstance().getLaunchedVersion(), ClientBrandRetriever.getClientModName());
         LOGGER.info("#################################################################");
     }
 }
