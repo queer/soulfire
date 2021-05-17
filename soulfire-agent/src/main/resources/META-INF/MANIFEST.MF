@@ -1,0 +1,4 @@
+Premain-Class: gg.amy.soulfire.SoulfireAgent
+Can-Redefine-Classes: true
+Can-Retransform-Classes: true
+Can-Set-Native-Method-Prefix: true

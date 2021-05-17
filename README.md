@@ -1,8 +1,8 @@
-# ingot
+# soulfire
 
 An experimental mod API for Minecraft. You probably don't want to use this.
 
-ingot does not expose **any** Minecraft code, but wraps it in a higher-level
+soulfire does not expose **any** Minecraft code, but wraps it in a higher-level
 API.
 
 The name is lowercase. DO NOT capitalise it.

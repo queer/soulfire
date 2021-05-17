@@ -6,9 +6,15 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="ingot-agent" />
-        <module name="ingot-api" />
+        <module name="soulfire-api" />
+        <module name="soulfire-example-mod" />
+        <module name="soulfire-agent" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="ingot-agent" target="16" />
+      <module name="ingot-api" target="16" />
+      <module name="ingot-example-mod" target="16" />
+    </bytecodeTargetLevel>
   </component>
 </project>
