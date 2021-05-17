@@ -4,6 +4,7 @@ import gg.amy.ingot.api.Minecraft;
 import gg.amy.ingot.bytecode.ClassMap;
 import gg.amy.ingot.bytecode.Injector;
 import gg.amy.ingot.bytecode.mapping.MappedClass;
+import gg.amy.ingot.bytecode.mapping.MappedMethod;
 import gg.amy.ingot.test.Events;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.*;
@@ -13,12 +14,10 @@ import org.objectweb.asm.tree.*;
  * @since 5/16/21.
  */
 public class MinecraftInjector extends Injector {
-    private final MappedClass minecraft;
+    private final MappedClass minecraft = ClassMap.lookup("net.minecraft.client.Minecraft");
 
     public MinecraftInjector() {
-        // TODO: Can we do better?
         super(ClassMap.lookup("net.minecraft.client.Minecraft").obfuscatedName());
-        minecraft = ClassMap.lookup("net.minecraft.client.Minecraft");
     }
 
     @Override
@@ -32,7 +31,7 @@ public class MinecraftInjector extends Injector {
             final var node = new MethodNode(ACC_PUBLIC, "getLaunchedVersion", "()" + $$(String.class), null, null);
             final var insns = new InsnList();
             insns.add(new VarInsnNode(ALOAD, 0));
-            insns.add(new MethodInsnNode(INVOKEVIRTUAL, minecraft.obfuscatedName(), minecraft.methods().get("getLaunchedVersion()"), "()" + $$(String.class), false));
+            insns.add(new MethodInsnNode(INVOKEVIRTUAL, minecraft.obfuscatedName(), minecraft.methods().get("getLaunchedVersion()").obfName(), "()" + $$(String.class), false));
             insns.add(new InsnNode(ARETURN));
             node.instructions.clear();
             node.instructions.add(insns);
@@ -42,8 +41,8 @@ public class MinecraftInjector extends Injector {
 
         // Inject events
         for(final var m : cn.methods) {
-            // TODO: Store desc? How do we handle obf?
-            if(m.name.equals(minecraft.methods().get("run()")) && m.desc.equals("()V")) {
+            final var run = minecraft.methods().get("run()");
+            if(m.name.equals(run.obfName()) && m.desc.equals(run.desc())) {
                 m.instructions.insert(new MethodInsnNode(INVOKESTATIC, $(Events.class), "gameStarted", "()V", false));
                 logger.info("Injected Events#gameStarted()");
             }

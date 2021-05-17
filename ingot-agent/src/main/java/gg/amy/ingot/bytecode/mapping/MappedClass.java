@@ -10,8 +10,8 @@ import java.util.Map;
 public record MappedClass(
         @Nonnull String name,
         @Nonnull String obfuscatedName,
-        @Nonnull Map<String, String> fields,
-        @Nonnull Map<String, String> methods
+        @Nonnull Map<String, MappedField> fields,
+        @Nonnull Map<String, MappedMethod> methods
 ) {
     @Nonnull
     public String descriptor() {

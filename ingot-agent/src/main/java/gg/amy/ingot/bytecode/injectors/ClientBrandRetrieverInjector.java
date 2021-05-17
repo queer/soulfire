@@ -18,7 +18,6 @@ public class ClientBrandRetrieverInjector extends Injector {
     @Override
     protected void inject(final ClassReader cr, final ClassNode cn) {
         for(final var m : cn.methods) {
-            // TODO: Store desc? How do we handle obf?
             if(m.name.equals("getClientModName")) {
                 for(final AbstractInsnNode instruction : m.instructions) {
                     if(instruction instanceof LdcInsnNode ldc) {

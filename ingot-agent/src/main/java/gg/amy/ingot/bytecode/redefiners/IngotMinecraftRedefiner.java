@@ -4,6 +4,7 @@ import gg.amy.ingot.api.Minecraft;
 import gg.amy.ingot.bytecode.ClassMap;
 import gg.amy.ingot.bytecode.Redefiner;
 import gg.amy.ingot.bytecode.mapping.MappedClass;
+import gg.amy.ingot.bytecode.mapping.MappedMethod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
@@ -31,8 +32,9 @@ public class IngotMinecraftRedefiner extends Redefiner {
         for(final var method : cn.methods) {
             switch(method.name) {
                 case "getInstance": {
+                    final var getInstance = minecraft.methods().get("getInstance()");
                     final var insns = new InsnList();
-                    insns.add(new MethodInsnNode(INVOKESTATIC, minecraft.obfuscatedName(), minecraft.methods().get("getInstance()"), "()" + minecraft.descriptor(), false));
+                    insns.add(new MethodInsnNode(INVOKESTATIC, minecraft.obfuscatedName(), getInstance.obfName(), getInstance.desc(), false));
                     insns.add(new InsnNode(ARETURN));
 
                     method.instructions.clear();

@@ -19,8 +19,8 @@ public final class MappingsParser {
         String currentLine = null;
         String currentClass = null;
         String obfCurrentClass = null;
-        final var fields = new HashMap<String, String>();
-        final var methods = new HashMap<String, String>();
+        final var fields = new HashMap<String, MappedField>();
+        final var methods = new HashMap<String, MappedMethod>();
         try {
             for(@Nonnull final var line : lines) {
                 currentLine = line;
@@ -48,9 +48,11 @@ public final class MappingsParser {
                     final var name = methodOrFieldTypeAndName[1];
                     final var obfName = parts[1];
                     if(type.matches("^\\d+.*")) {
-                        methods.put(name, obfName);
+                        final var typeParts = type.split(":", 3);
+                        final var returnType = typeParts[2];
+                        methods.put(name, new MappedMethod(name, obfName, returnType));
                     } else {
-                        fields.put(name, obfName);
+                        fields.put(name, new MappedField(name, obfName, type));
                     }
                 }
             }
