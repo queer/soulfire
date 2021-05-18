@@ -9,6 +9,7 @@
     <packaging>pom</packaging>
     <version>0.0.1</version>
     <modules>
+        <module>soulfire-annotations</module>
         <module>soulfire-api</module>
         <module>soulfire-agent</module>
         <module>soulfire-example-mod</module>

@@ -6,6 +6,7 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="soulfire-annotations" />
         <module name="soulfire-api" />
         <module name="soulfire-example-mod" />
         <module name="soulfire-agent" />

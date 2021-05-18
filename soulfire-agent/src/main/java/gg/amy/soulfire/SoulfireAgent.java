@@ -3,11 +3,10 @@ package gg.amy.soulfire;
 import gg.amy.soulfire.bytecode.ClassMap;
 import gg.amy.soulfire.bytecode.Injector;
 import gg.amy.soulfire.bytecode.Redefiner;
+import gg.amy.soulfire.bytecode.bridge.BridgeSynthesiser;
 import gg.amy.soulfire.bytecode.injectors.*;
 import gg.amy.soulfire.bytecode.redefiners.ItemPropertiesRedefiner;
 import gg.amy.soulfire.bytecode.redefiners.ResourceKeysRedefiner;
-import gg.amy.soulfire.bytecode.redefiners.SoulfireClientBrandRetrieverRedefiner;
-import gg.amy.soulfire.bytecode.redefiners.SoulfireMinecraftRedefiner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,6 +37,10 @@ public final class SoulfireAgent {
             LOGGER.info("Mapping classes...");
             ClassMap.map();
 
+            // Synthesise bridges
+            LOGGER.info("Synthesising bridges...");
+            BridgeSynthesiser.synthesise(i);
+
             LOGGER.info("Injecting and redefining...");
             // Injectors and redefiners require mappings to already be parsed
             final var injectors = List.of(
@@ -49,8 +52,6 @@ public final class SoulfireAgent {
                     new ItemInjector()
             );
             final var redefiners = List.of(
-                    new SoulfireMinecraftRedefiner(),
-                    new SoulfireClientBrandRetrieverRedefiner(),
                     new ResourceKeysRedefiner(),
                     new ItemPropertiesRedefiner()
             );
@@ -63,6 +64,8 @@ public final class SoulfireAgent {
 
             // Add redefiners
             i.redefineClasses(redefiners.stream().map(Redefiner::redefine).toArray(ClassDefinition[]::new));
+
+            // Retransforming injectors
             injectors.stream().filter(Injector::needsRetransform).forEach(injector -> {
                 try {
                     i.retransformClasses(Class.forName(injector.classToInject().replace("/", ".")));
@@ -70,6 +73,7 @@ public final class SoulfireAgent {
                     throw new IllegalStateException(e);
                 }
             });
+
             LOGGER.info("premain finished! Booting Minecraft...");
         } catch(final Throwable t) {
             LOGGER.error("Couldn't finish premain:", t);

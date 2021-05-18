@@ -108,7 +108,7 @@
       <option name="doNotWeakenToJavaLangObject" value="true" />
       <option name="onlyWeakentoInterface" value="true" />
       <option name="doNotWeakenInferredVariableType" value="true" />
-      <stopClasses>com.mewna.catnip.entity.user.User,com.grack.nanojson.JsonObject,com.grack.nanojson.JsonArray,com.mewna.catnip.rest.guild.GuildData,com.mewna.catnip.rest.guild.ChannelData,com.mewna.catnip.rest.guild.RoleData,java.lang.String,com.mewna.catnip.entity.guild.Member,com.mewna.catnip.entity.guild.PermissionHolder,com.mewna.catnip.entity.guild.Role,java.util.Collection,com.mewna.catnip.rest.invite.InviteCreateOptions,com.mewna.catnip.entity.guild.PermissionOverride</stopClasses>
+      <stopClasses>com.mewna.catnip.entity.user.User,com.grack.nanojson.JsonObject,com.grack.nanojson.JsonArray,com.mewna.catnip.rest.guild.GuildData,com.mewna.catnip.rest.guild.ChannelData,com.mewna.catnip.rest.guild.RoleData,java.lang.String,com.mewna.catnip.entity.guild.Member,com.mewna.catnip.entity.guild.PermissionHolder,com.mewna.catnip.entity.guild.Role,java.util.Collection,com.mewna.catnip.rest.invite.InviteCreateOptions,com.mewna.catnip.entity.guild.PermissionOverride,java.lang.Class</stopClasses>
     </inspection_tool>
     <inspection_tool class="UnnecessarilyQualifiedInnerClassAccess" enabled="true" level="WARNING" enabled_by_default="true">
       <option name="ignoreReferencesNeedingImport" value="false" />

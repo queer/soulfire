@@ -18,7 +18,7 @@ public final class Events {
     }
 
     public static void gameStarted() {
-        LOGGER.info("soulfire running on version {} (brand: {})", Minecraft.getInstance().getLaunchedVersion(), ClientBrandRetriever.getClientModName());
+        LOGGER.info("soulfire running on version {} (brand: {})", Minecraft.getInstance().launchedVersion(), ClientBrandRetriever.clientModName());
         LOGGER.info("soulfire created properties: {}", ItemProperties.create());
     }
 }

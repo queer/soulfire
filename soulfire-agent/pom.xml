@@ -29,8 +29,20 @@
         </dependency>
 
         <dependency>
+            <groupId>gg.amy.soulfire</groupId>
+            <artifactId>soulfire-annotations</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm</artifactId>
+            <version>${asm.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.ow2.asm</groupId>
+            <artifactId>asm-commons</artifactId>
             <version>${asm.version}</version>
         </dependency>
 
