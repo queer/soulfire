@@ -12,3 +12,6 @@ The name is lowercase. DO NOT capitalise it.
 - I was bored.
 - I hated touching Minecraft code directly when writing mods.
 - I hate the idea that mods need to be postprocessed to reobfuscate.
+
+If Forge and Fabric expose Minecraft's APIs directly, soulfire is more like
+Bukkit.
