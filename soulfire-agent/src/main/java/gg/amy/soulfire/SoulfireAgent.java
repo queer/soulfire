@@ -3,9 +3,9 @@ package gg.amy.soulfire;
 import gg.amy.soulfire.bytecode.ClassMap;
 import gg.amy.soulfire.bytecode.Injector;
 import gg.amy.soulfire.bytecode.Redefiner;
-import gg.amy.soulfire.bytecode.injectors.ClientBrandRetrieverInjector;
-import gg.amy.soulfire.bytecode.injectors.MinecraftInjector;
-import gg.amy.soulfire.bytecode.injectors.TitleScreenInjector;
+import gg.amy.soulfire.bytecode.injectors.*;
+import gg.amy.soulfire.bytecode.redefiners.ItemPropertiesRedefiner;
+import gg.amy.soulfire.bytecode.redefiners.ResourceKeysRedefiner;
 import gg.amy.soulfire.bytecode.redefiners.SoulfireClientBrandRetrieverRedefiner;
 import gg.amy.soulfire.bytecode.redefiners.SoulfireMinecraftRedefiner;
 import org.apache.logging.log4j.LogManager;
@@ -15,7 +15,10 @@ import javax.annotation.Nonnull;
 import java.lang.instrument.ClassDefinition;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
+import java.lang.reflect.Field;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * @author amy
@@ -29,17 +32,27 @@ public final class SoulfireAgent {
 
     public static void premain(@Nonnull final String agentArgs, @Nonnull final Instrumentation i) {
         try {
+            LOGGER.info("Opening up java.lang modules...");
+            i.redefineModule(String.class.getModule(), Set.of(), Map.of(), Map.of("java.lang", Set.of(SoulfireAgent.class.getModule())), Set.of(), Map.of());
+            i.redefineModule(Field.class.getModule(), Set.of(), Map.of(), Map.of("java.lang.reflect", Set.of(SoulfireAgent.class.getModule())), Set.of(), Map.of());
+            LOGGER.info("Mapping classes...");
             ClassMap.map();
 
+            LOGGER.info("Injecting and redefining...");
             // Injectors and redefiners require mappings to already be parsed
             final var injectors = List.of(
                     new MinecraftInjector(),
                     new ClientBrandRetrieverInjector(),
-                    new TitleScreenInjector()
+                    new TitleScreenInjector(),
+                    new ResourceKeyInjector(),
+                    new ItemPropertiesInjector(),
+                    new ItemInjector()
             );
             final var redefiners = List.of(
                     new SoulfireMinecraftRedefiner(),
-                    new SoulfireClientBrandRetrieverRedefiner()
+                    new SoulfireClientBrandRetrieverRedefiner(),
+                    new ResourceKeysRedefiner(),
+                    new ItemPropertiesRedefiner()
             );
 
             // Add injectors

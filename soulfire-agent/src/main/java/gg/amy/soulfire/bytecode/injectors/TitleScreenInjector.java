@@ -23,8 +23,8 @@ public class TitleScreenInjector extends Injector {
         final var font = ClassMap.lookup("net.minecraft.client.gui.Font");
         final var component = ClassMap.lookup("net.minecraft.client.gui.GuiComponent");
 
-        final var render = titleScreen.methods().get("render(com.mojang.blaze3d.vertex.PoseStack,int,int,float)");
-        final var drawString = component.methods().get("drawString(com.mojang.blaze3d.vertex.PoseStack,net.minecraft.client.gui.Font,java.lang.String,int,int,int)");
+        final var render = titleScreen.method("render(com.mojang.blaze3d.vertex.PoseStack,int,int,float)");
+        final var drawString = component.method("drawString(com.mojang.blaze3d.vertex.PoseStack,net.minecraft.client.gui.Font,java.lang.String,int,int,int)");
         logger.info("Collected parts: {}", render.desc());
 
         for(final var m : cn.methods) {

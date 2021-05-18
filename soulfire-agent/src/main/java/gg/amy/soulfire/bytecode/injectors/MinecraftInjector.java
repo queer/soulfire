@@ -29,7 +29,7 @@ public class MinecraftInjector extends Injector {
             final var node = new MethodNode(ACC_PUBLIC, "getLaunchedVersion", "()" + $$(String.class), null, null);
             final var insns = new InsnList();
             insns.add(new VarInsnNode(ALOAD, 0));
-            insns.add(new MethodInsnNode(INVOKEVIRTUAL, minecraft.obfName(), minecraft.methods().get("getLaunchedVersion()").obfName(), "()" + $$(String.class), false));
+            insns.add(new MethodInsnNode(INVOKEVIRTUAL, minecraft.obfName(), minecraft.method("getLaunchedVersion()").obfName(), "()" + $$(String.class), false));
             insns.add(new InsnNode(ARETURN));
             node.instructions.clear();
             node.instructions.add(insns);

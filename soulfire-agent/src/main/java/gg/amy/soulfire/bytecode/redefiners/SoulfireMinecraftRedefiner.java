@@ -31,7 +31,7 @@ public class SoulfireMinecraftRedefiner extends Redefiner {
         for(final var method : cn.methods) {
             switch(method.name) {
                 case "getInstance": {
-                    final var getInstance = minecraft.methods().get("getInstance()");
+                    final var getInstance = minecraft.method("getInstance()");
                     final var insns = new InsnList();
                     insns.add(new MethodInsnNode(INVOKESTATIC, minecraft.obfName(), getInstance.obfName(), getInstance.desc(), false));
                     insns.add(new InsnNode(ARETURN));

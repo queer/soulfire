@@ -17,4 +17,12 @@ public record MappedClass(
     public String descriptor() {
         return 'L' + obfName + ';';
     }
+
+    public MappedField field(@Nonnull final String field) {
+        return fields.get(field);
+    }
+
+    public MappedMethod method(@Nonnull final String method) {
+        return methods.get(method);
+    }
 }
