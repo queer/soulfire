@@ -31,7 +31,8 @@ public abstract class Redefiner extends BytecodeMangler {
             final ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_MAXS | ClassWriter.COMPUTE_FRAMES);
             cn.accept(cw);
             final byte[] cwBytes = cw.toByteArray();
-            CheckClassAdapter.verify(new ClassReader(cwBytes), false, new PrintWriter(System.out));
+            // THIS LOADS THE CLASS
+            CheckClassAdapter.verify(new ClassReader(cwBytes), true, new PrintWriter(System.err));
             return new ClassDefinition(Class.forName(classToInject.replace('/', '.')), cwBytes);
         } catch(final IOException | ClassNotFoundException e) {
             throw new IllegalStateException(e);

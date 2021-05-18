@@ -1,17 +1,17 @@
 package gg.amy.soulfire.bytecode.bridge;
 
-import gg.amy.soulfire.annotations.Bridge;
-import gg.amy.soulfire.annotations.BridgeMethod;
-import gg.amy.soulfire.annotations.Retransforming;
+import gg.amy.soulfire.annotations.*;
 import gg.amy.soulfire.api.minecraft.Minecraft;
 import gg.amy.soulfire.bytecode.ClassMap;
 import gg.amy.soulfire.bytecode.Injector;
 import gg.amy.soulfire.bytecode.Redefiner;
+import gg.amy.soulfire.utils.InsnPrinter;
 import io.github.classgraph.ClassGraph;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.Method;
 import org.objectweb.asm.tree.*;
 
@@ -50,6 +50,7 @@ public final class BridgeSynthesiser implements Opcodes {
                 .enableAllInfo()
                 .scan()) {
             for(final var ci : graph.getClassesWithAnnotation(Bridge.class.getName())) {
+                LOGGER.warn("Loading bridge class {}", ci.getName());
                 final var bridgeClass = ci.loadClass();
                 if(!bridgeClass.isInterface()) {
                     throw new IllegalStateException(String.format("@Bridge class %s isn't an interface!", bridgeClass.getName()));
@@ -57,84 +58,105 @@ public final class BridgeSynthesiser implements Opcodes {
                 LOGGER.info("Operating on bridge class {}!", bridgeClass.getName());
                 final var bridge = bridgeClass.getDeclaredAnnotation(Bridge.class);
                 final var target = ClassMap.lookup(bridge.value());
+                final var retransforming = bridgeClass.getDeclaredAnnotation(Retransforming.class) != null;
+
+                LOGGER.info("Registering bridge transformer.");
 
                 // 1. Register a transformer to force the target to
                 //    implement the bridge interface.
-                i.addTransformer(new Injector(target.obfName()) {
-                    @Override
-                    protected void inject(final ClassReader cr, final ClassNode cn) {
-                        cn.interfaces.add($(bridgeClass));
+                if(!bridgeClass.isAnnotationPresent(Nontransforming.class)) {
+                    i.addTransformer(new Injector(target.obfName()) {
+                        @Override
+                        protected void inject(final ClassReader cr, final ClassNode cn) {
+                            cn.interfaces.add($(bridgeClass));
 
-                        // 1.1. Detect virtual bridge methods.
-                        for(final var m : bridgeClass.getMethods()) {
-                            if(m.isAnnotationPresent(BridgeMethod.class) && !Modifier.isStatic(m.getModifiers())) {
-                                logger.info("Synthesising non-static bridge {}#{}!", bridgeClass.getName(), m.getName());
-                                final var obfMethod = target.method(m.getAnnotation(BridgeMethod.class).value());
+                            for(final var m : bridgeClass.getMethods()) {
+                                // 1.1. Detect virtual bridge methods.
+                                if(m.isAnnotationPresent(BridgeMethod.class) && !Modifier.isStatic(m.getModifiers())) {
+                                    logger.info("Synthesising non-static bridge {}#{}!", bridgeClass.getName(), m.getName());
+                                    final var obfMethod = target.method(m.getAnnotation(BridgeMethod.class).value());
 
-                                final var insns = new InsnList();
-                                final var obfDesc = obfMethod.desc();
+                                    final var insns = new InsnList();
+                                    final var obfDesc = obfMethod.descNoComma();
 
-                                // 1.2. Synthesise param-load insns.
-                                insns.add(new VarInsnNode(ALOAD, 0)); // this
+                                    // 1.2. Synthesise param-load insns.
+                                    insns.add(new VarInsnNode(ALOAD, 0)); // this
 
-                                int counter = 1;
-                                for(final Class<?> type : m.getParameterTypes()) {
-                                    final int loadInsn;
-                                    if(type.equals(boolean.class)) {
-                                        loadInsn = ILOAD;
-                                    } else if(type.equals(byte.class)) {
-                                        loadInsn = BIPUSH;
-                                    } else if(type.equals(short.class)) {
-                                        loadInsn = SIPUSH;
-                                    } else if(type.equals(char.class)) {
-                                        loadInsn = SIPUSH;
-                                    } else if(type.equals(int.class)) {
-                                        loadInsn = ILOAD;
-                                    } else if(type.equals(long.class)) {
-                                        loadInsn = LLOAD;
-                                    } else if(type.equals(float.class)) {
-                                        loadInsn = FLOAD;
-                                    } else if(type.equals(double.class)) {
-                                        loadInsn = DLOAD;
-                                    } else {
-                                        loadInsn = ALOAD;
+                                    int counter = 1;
+                                    final var argTypes = obfMethod.argTypes();
+                                    for(final Class<?> type : m.getParameterTypes()) {
+                                        final var loadInsn = Type.getType(type).getOpcode(ILOAD);
+                                        insns.add(new VarInsnNode(loadInsn, counter));
+                                        insns.add(new TypeInsnNode(CHECKCAST, argTypes.get(counter - 1)));
+                                        counter += 1;
                                     }
 
-                                    insns.add(new VarInsnNode(loadInsn, counter));
-                                    counter += 1;
+                                    insns.add(new MethodInsnNode(INVOKEVIRTUAL, target.obfName().replace('.', '/'), obfMethod.obfName(), obfDesc, false));
+
+                                    // 1.3. Synthesise correct return insn.
+                                    insns.add(new InsnNode(switch(obfDesc.charAt(obfDesc.length() - 1)) {
+                                        case 'Z', 'I', 'C', 'S', 'B' -> IRETURN;
+                                        case 'J' -> LRETURN;
+                                        case 'F' -> FRETURN;
+                                        case 'D' -> DRETURN;
+                                        case 'V' -> RETURN;
+                                        case ';' -> ARETURN;
+                                        default -> throw new IllegalStateException("Unexpected value: " + obfDesc.charAt(obfDesc.length() - 1));
+                                    }));
+
+                                    final var node = new MethodNode(ACC_PUBLIC, m.getName(), Method.getMethod(m).getDescriptor(), null, null);
+                                    node.instructions.clear();
+                                    node.instructions.add(insns);
+                                    cn.methods.add(node);
+
+                                    logger.info("Bridging {}#{}.", target.obfName(), node.name);
                                 }
 
-                                insns.add(new MethodInsnNode(INVOKEVIRTUAL, target.obfName().replace('.', '/'), obfMethod.obfName(), obfDesc, false));
+                                // 1.4. Detect virtual field bridges.
+                                if(m.isAnnotationPresent(BridgeField.class) && !Modifier.isStatic(m.getModifiers())) {
+                                    logger.info("Synthesising non-static field bridge {}#{}!", bridgeClass, m.getName());
+                                    final var obfField = target.field(m.getAnnotation(BridgeField.class).value());
 
-                                // 1.3. Synthesise correct return insn.
-                                insns.add(new InsnNode(switch(obfDesc.charAt(obfDesc.length() - 1)) {
-                                    case 'Z', 'I', 'C', 'S', 'B' -> IRETURN;
-                                    case 'J' -> LRETURN;
-                                    case 'F' -> FRETURN;
-                                    case 'D' -> DRETURN;
-                                    case 'V' -> RETURN;
-                                    case ';' -> ARETURN;
-                                    default -> throw new IllegalStateException("Unexpected value: " + obfDesc.charAt(obfDesc.length() - 1));
-                                }));
+                                    final var insns = new InsnList();
+                                    final var obfDesc = obfField.type();
 
-                                final var node = new MethodNode(ACC_PUBLIC, m.getName(), Method.getMethod(m).getDescriptor(), null, null);
-                                node.instructions.clear();
-                                node.instructions.add(insns);
-                                cn.methods.add(node);
+                                    // 1.5. Synthesise load and return insns.
+                                    insns.add(new FieldInsnNode(GETFIELD, target.obfName().replace('.', '/'), obfField.name(), obfDesc));
 
-                                logger.info("Bridging {}#{}.", target.obfName(), node.name);
+                                    insns.add(new InsnNode(switch(obfDesc.charAt(obfDesc.length() - 1)) {
+                                        case 'Z', 'I', 'C', 'S', 'B' -> IRETURN;
+                                        case 'J' -> LRETURN;
+                                        case 'F' -> FRETURN;
+                                        case 'D' -> DRETURN;
+//                                    case 'V' -> RETURN;
+                                        case ';' -> ARETURN;
+                                        default -> ARETURN;
+                                    }));
+
+                                    final var node = new MethodNode(ACC_PUBLIC, m.getName(), Method.getMethod(m).getDescriptor(), null, null);
+                                    node.instructions.clear();
+                                    node.instructions.add(insns);
+                                    cn.methods.add(node);
+
+                                    logger.info("Bridging {}#{}.", target.obfName(), node.name);
+                                }
                             }
                         }
+                    }, retransforming);
+                    if(retransforming) {
+                        i.retransformClasses(Class.forName(target.obfName()));
                     }
-                }, bridgeClass.isAnnotationPresent(Retransforming.class));
+                }
+
+                LOGGER.info("Redefining bridge.");
 
                 // 2. Redefine the bridge interface to implement static
                 //    methods.
                 i.redefineClasses(new Redefiner(bridgeClass.getName()) {
                     @Override
                     protected void inject(final ClassReader cr, final ClassNode cn) {
-                        // 2.1. Detect static bridge methods
                         for(final var m : bridgeClass.getMethods()) {
+                            // 2.1. Detect static bridge methods
                             if(m.isAnnotationPresent(BridgeMethod.class) && Modifier.isStatic(m.getModifiers())) {
                                 final var obfMethod = target.method(m.getAnnotation(BridgeMethod.class).value());
                                 final var reflDesc = Method.getMethod(m).getDescriptor();
@@ -146,9 +168,20 @@ public final class BridgeSynthesiser implements Opcodes {
 
                                 final var mn = targetNode.get();
                                 final var insns = new InsnList();
-                                final var obfDesc = obfMethod.desc();
+                                final var obfDesc = obfMethod.descNoComma();
+                                logger.info("Redefining {}#{}...", bridgeClass.getName(), mn.name);
+
+                                int counter = 0;
+                                final var argTypes = obfMethod.argTypes();
+                                for(final Class<?> type : m.getParameterTypes()) {
+                                    final var loadInsn = Type.getType(type).getOpcode(ILOAD);
+                                    insns.add(new VarInsnNode(loadInsn, counter));
+                                    insns.add(new TypeInsnNode(CHECKCAST, argTypes.get(counter)));
+                                    counter += 1;
+                                }
 
                                 insns.add(new MethodInsnNode(INVOKESTATIC, target.obfName().replace('.', '/'), obfMethod.obfName(), obfDesc, false));
+                                // insns.add(new TypeInsnNode(CHECKCAST, $(m.getReturnType().getName())));
                                 // 2.3. Synthesise correct return insn.
                                 insns.add(new InsnNode(switch(obfDesc.charAt(obfDesc.length() - 1)) {
                                     case 'Z', 'I', 'C', 'S', 'B' -> IRETURN;
@@ -162,7 +195,43 @@ public final class BridgeSynthesiser implements Opcodes {
 
                                 mn.instructions.clear();
                                 mn.instructions.add(insns);
+                                InsnPrinter.print(mn.instructions);
+                                mn.maxLocals = m.getParameterCount() * 2;
+                                mn.maxStack = m.getParameterCount() * 2;
                                 logger.info("Redefined {}#{}.", bridgeClass.getName(), mn.name);
+                            }
+
+                            // 2.4. Detect static field bridges.
+                            if(m.isAnnotationPresent(BridgeField.class) && Modifier.isStatic(m.getModifiers())) {
+                                logger.info("Synthesising non-static field bridge {}#{}!", bridgeClass, m.getName());
+                                final var obfField = target.field(m.getAnnotation(BridgeField.class).value());
+                                final var reflDesc = Method.getMethod(m).getDescriptor();
+                                final var targetNode = cn.methods.stream().filter(mn -> mn.name.equals(m.getName()) && mn.desc.equals(reflDesc)).findFirst();
+                                if(targetNode.isEmpty()) {
+                                    throw new IllegalStateException("No node for method " + m.getName() + ' ' + reflDesc);
+                                }
+
+                                final var mn = targetNode.get();
+                                final var insns = new InsnList();
+                                final var obfDesc = obfField.desc();
+
+                                // 2.5. Synthesise load and return insns.
+                                insns.add(new FieldInsnNode(GETSTATIC, target.obfName().replace('.', '/'), obfField.obfName(), obfDesc));
+
+                                insns.add(new InsnNode(switch(obfDesc.charAt(obfDesc.length() - 1)) {
+                                    case 'Z', 'I', 'C', 'S', 'B' -> IRETURN;
+                                    case 'J' -> LRETURN;
+                                    case 'F' -> FRETURN;
+                                    case 'D' -> DRETURN;
+//                                    case 'V' -> RETURN;
+                                    case ';' -> ARETURN;
+                                    default -> ARETURN;
+                                }));
+
+                                mn.instructions.clear();
+                                mn.instructions.add(insns);
+
+                                logger.info("Bridging {}#{}.", target.obfName(), mn.name);
                             }
                         }
                         logger.info("Fully redefined {}.", bridgeClass.getName());

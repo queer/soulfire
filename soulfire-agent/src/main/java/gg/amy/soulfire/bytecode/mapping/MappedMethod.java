@@ -4,6 +4,7 @@ import gg.amy.soulfire.bytecode.ClassMap;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -29,6 +30,24 @@ public record MappedMethod(@Nonnull String name, @Nonnull String obfName, @Nonnu
             return '(' + obfuscatedArgs + ')' + obfuscatedType;
         } else {
             return "()" + obfuscatedType;
+        }
+    }
+
+    public List<String> argTypes() {
+        if(!name.endsWith("()")) {
+            final var args = name.replace(")", "").split("\\(")[1].split(",");
+            return Arrays.stream(args)
+                    .map(this::parseType)
+                    .map(t -> {
+                        if(t.endsWith(";")) {
+                            return t.replace(";", "").replaceFirst("L", "");
+                        } else {
+                            return t;
+                        }
+                    })
+                    .toList();
+        } else {
+            return List.of();
         }
     }
 

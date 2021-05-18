@@ -3,6 +3,8 @@ package gg.amy.soulfire.test;
 import gg.amy.soulfire.api.minecraft.ClientBrandRetriever;
 import gg.amy.soulfire.api.minecraft.Minecraft;
 import gg.amy.soulfire.api.minecraft.item.ItemProperties;
+import gg.amy.soulfire.api.minecraft.registry.Registries;
+import gg.amy.soulfire.api.minecraft.registry.Registries.ResourceKeys;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -20,5 +22,6 @@ public final class Events {
     public static void gameStarted() {
         LOGGER.info("soulfire running on version {} (brand: {})", Minecraft.getInstance().launchedVersion(), ClientBrandRetriever.clientModName());
         LOGGER.info("soulfire created properties: {}", ItemProperties.create());
+        LOGGER.info("soulfire found registry resource key: {}", ResourceKeys.blocks());
     }
 }
