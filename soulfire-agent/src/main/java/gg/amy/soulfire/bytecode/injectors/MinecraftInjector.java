@@ -16,7 +16,7 @@ public class MinecraftInjector extends Injector {
     private final MappedClass minecraft = ClassMap.lookup("net.minecraft.client.Minecraft");
 
     public MinecraftInjector() {
-        super(ClassMap.lookup("net.minecraft.client.Minecraft").obfuscatedName());
+        super(ClassMap.lookup("net.minecraft.client.Minecraft").obfName());
     }
 
     @Override
@@ -29,7 +29,7 @@ public class MinecraftInjector extends Injector {
             final var node = new MethodNode(ACC_PUBLIC, "getLaunchedVersion", "()" + $$(String.class), null, null);
             final var insns = new InsnList();
             insns.add(new VarInsnNode(ALOAD, 0));
-            insns.add(new MethodInsnNode(INVOKEVIRTUAL, minecraft.obfuscatedName(), minecraft.methods().get("getLaunchedVersion()").obfName(), "()" + $$(String.class), false));
+            insns.add(new MethodInsnNode(INVOKEVIRTUAL, minecraft.obfName(), minecraft.methods().get("getLaunchedVersion()").obfName(), "()" + $$(String.class), false));
             insns.add(new InsnNode(ARETURN));
             node.instructions.clear();
             node.instructions.add(insns);
@@ -38,8 +38,8 @@ public class MinecraftInjector extends Injector {
         }
 
         // Inject events
+        final var run = minecraft.methods().get("run()");
         for(final var m : cn.methods) {
-            final var run = minecraft.methods().get("run()");
             if(m.name.equals(run.obfName()) && m.desc.equals(run.desc())) {
                 m.instructions.insert(new MethodInsnNode(INVOKESTATIC, $(Events.class), "gameStarted", "()V", false));
                 logger.info("Injected Events#gameStarted()");

@@ -9,12 +9,12 @@ import java.util.Map;
  */
 public record MappedClass(
         @Nonnull String name,
-        @Nonnull String obfuscatedName,
+        @Nonnull String obfName,
         @Nonnull Map<String, MappedField> fields,
         @Nonnull Map<String, MappedMethod> methods
 ) {
     @Nonnull
     public String descriptor() {
-        return 'L' + obfuscatedName + ';';
+        return 'L' + obfName + ';';
     }
 }

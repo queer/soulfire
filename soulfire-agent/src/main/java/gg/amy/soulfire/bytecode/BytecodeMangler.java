@@ -6,6 +6,8 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.ClassNode;
 
+import javax.annotation.Nonnull;
+
 /**
  * @author amy
  * @since 5/16/21.
@@ -19,20 +21,25 @@ public abstract class BytecodeMangler implements Opcodes {
     }
 
     @SuppressWarnings("SameParameterValue")
-    protected static String $(final Class<?> c) {
+    protected static String $(@Nonnull final Class<?> c) {
         return $(c.getName());
     }
 
-    protected static String $(final String s) {
+    protected static String $(@Nonnull final String s) {
         return s.replace('/', '$').replace('.', '/');
     }
 
-    protected static String $$(final Class<?> c) {
+    @SuppressWarnings("SameParameterValue")
+    protected static String $$(@Nonnull final Class<?> c) {
         return $$(c.getName());
     }
 
-    protected static String $$(final String s) {
-        return 'L' + $(s) + ';';
+    protected static String $$(@Nonnull final String s) {
+        if(s.startsWith("L") && s.endsWith(";")) {
+            return s;
+        } else {
+            return 'L' + $(s) + ';';
+        }
     }
 
     protected abstract void inject(ClassReader cr, ClassNode cn);

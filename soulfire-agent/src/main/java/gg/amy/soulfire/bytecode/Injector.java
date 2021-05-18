@@ -17,9 +17,15 @@ import java.security.ProtectionDomain;
  */
 public abstract class Injector extends BytecodeMangler implements ClassFileTransformer {
     protected final Logger logger = LogManager.getLogger();
+    private boolean needsRetransform;
 
     protected Injector(final String classToInject) {
+        this(classToInject, false);
+    }
+
+    protected Injector(final String classToInject, final boolean needsRetransform) {
         super(classToInject);
+        this.needsRetransform = needsRetransform;
     }
 
     @Override
@@ -48,4 +54,8 @@ public abstract class Injector extends BytecodeMangler implements ClassFileTrans
     }
 
     protected abstract void inject(ClassReader cr, ClassNode cn);
+
+    public boolean needsRetransform() {
+        return needsRetransform;
+    }
 }

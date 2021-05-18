@@ -12,12 +12,20 @@ import java.util.stream.Collectors;
  */
 public record MappedMethod(@Nonnull String name, @Nonnull String obfName, @Nonnull String type) {
     public String desc() {
+        return desc(",");
+    }
+
+    public String descNoComma() {
+        return desc("");
+    }
+
+    public String desc(@Nonnull final String delim) {
         final var obfuscatedType = parseType(type);
         if(!name.endsWith("()")) {
             final var args = name.replace(")", "").split("\\(")[1].split(",");
             final var obfuscatedArgs = Arrays.stream(args)
                     .map(this::parseType)
-                    .collect(Collectors.joining(","));
+                    .collect(Collectors.joining(delim));
             return '(' + obfuscatedArgs + ')' + obfuscatedType;
         } else {
             return "()" + obfuscatedType;
@@ -46,7 +54,7 @@ public record MappedMethod(@Nonnull String name, @Nonnull String obfName, @Nonnu
             if(lookup != null) {
                 return lookup.descriptor();
             } else {
-                return type;
+                return 'L' + type.replace('.', '/') + ';';
             }
         } else if(type.startsWith("[")) {
             return '[' + parseType(type.substring(1));
