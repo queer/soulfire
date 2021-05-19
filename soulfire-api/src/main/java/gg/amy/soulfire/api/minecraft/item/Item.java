@@ -14,6 +14,7 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
 @Bridge("net.minecraft.world.item.Item")
 public interface Item {
     @Nonnull
+    @BridgeMethod("<init>(net.minecraft.world.item.Item$Properties)")
     static Item create(@Nonnull final ItemProperties properties) {
         return unimplementedReturn();
     }

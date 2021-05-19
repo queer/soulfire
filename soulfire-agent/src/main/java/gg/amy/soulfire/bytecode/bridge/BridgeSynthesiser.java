@@ -191,6 +191,11 @@ public final class BridgeSynthesiser implements Opcodes {
                         final var obfDesc = obfMethod.descNoComma();
                         logger.info("Redefining {}#{}...", bridgeClass.getName(), mn.name);
 
+                        if(obfMethod.obfName().startsWith("<init>")) {
+                            insns.add(new TypeInsnNode(NEW, target.obfName()));
+                            insns.add(new InsnNode(DUP));
+                        }
+
                         int counter = 0;
                         final var argTypes = obfMethod.argTypes();
                         for(final Class<?> type : m.getParameterTypes()) {
@@ -202,18 +207,23 @@ public final class BridgeSynthesiser implements Opcodes {
                             counter += 1;
                         }
 
-                        insns.add(new MethodInsnNode(INVOKESTATIC, target.obfName().replace('.', '/'), obfMethod.obfName(), obfDesc, false));
-
-                        // 2.3. Synthesise correct return insn.
-                        insns.add(new InsnNode(switch(obfDesc.charAt(obfDesc.length() - 1)) {
-                            case 'Z', 'I', 'C', 'S', 'B' -> IRETURN;
-                            case 'J' -> LRETURN;
-                            case 'F' -> FRETURN;
-                            case 'D' -> DRETURN;
-                            case 'V' -> RETURN;
-                            case ';' -> ARETURN;
-                            default -> throw new IllegalStateException("Unexpected value: " + obfDesc.charAt(obfDesc.length() - 1));
-                        }));
+                        if(obfMethod.obfName().startsWith("<init>")) {
+                            insns.add(new MethodInsnNode(INVOKESPECIAL, $(target.obfName()), obfMethod.obfName(), obfDesc, false));
+                            insns.add(new TypeInsnNode(CHECKCAST, $(m.getReturnType().getName())));
+                            insns.add(new InsnNode(ARETURN));
+                        } else {
+                            insns.add(new MethodInsnNode(INVOKESTATIC, $(target.obfName()), obfMethod.obfName(), obfDesc, false));
+                            // 2.3. Synthesise correct return insn.
+                            insns.add(new InsnNode(switch(obfDesc.charAt(obfDesc.length() - 1)) {
+                                case 'Z', 'I', 'C', 'S', 'B' -> IRETURN;
+                                case 'J' -> LRETURN;
+                                case 'F' -> FRETURN;
+                                case 'D' -> DRETURN;
+                                case 'V' -> RETURN;
+                                case ';' -> ARETURN;
+                                default -> throw new IllegalStateException("Unexpected value: " + obfDesc.charAt(obfDesc.length() - 1));
+                            }));
+                        }
 
                         mn.instructions.clear();
                         mn.instructions.add(insns);

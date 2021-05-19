@@ -7,10 +7,6 @@ import gg.amy.soulfire.bytecode.bridge.BridgeSynthesiser;
 import gg.amy.soulfire.bytecode.injectors.ClientBrandRetrieverInjector;
 import gg.amy.soulfire.bytecode.injectors.MinecraftInjector;
 import gg.amy.soulfire.bytecode.injectors.TitleScreenInjector;
-import gg.amy.soulfire.bytecode.redefiners.BlockItemRedefiner;
-import gg.amy.soulfire.bytecode.redefiners.BlockRedefiner;
-import gg.amy.soulfire.bytecode.redefiners.ItemPropertiesRedefiner;
-import gg.amy.soulfire.bytecode.redefiners.ItemRedefiner;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -52,12 +48,7 @@ public final class SoulfireAgent {
                     new ClientBrandRetrieverInjector(),
                     new TitleScreenInjector()
             );
-            final var redefiners = List.of(
-                    new ItemRedefiner(),
-                    new ItemPropertiesRedefiner(),
-                    new BlockRedefiner(),
-                    new BlockItemRedefiner()
-            );
+            final var redefiners = List.<Redefiner>of();
 
             // Add injectors
             injectors.forEach(injector -> {
@@ -66,6 +57,7 @@ public final class SoulfireAgent {
             });
 
             // Add redefiners
+            //noinspection RedundantOperationOnEmptyContainer
             i.redefineClasses(redefiners.stream().map(Redefiner::redefine).toArray(ClassDefinition[]::new));
 
             // Retransforming injectors
