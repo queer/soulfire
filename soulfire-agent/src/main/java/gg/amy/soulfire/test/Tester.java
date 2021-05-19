@@ -17,10 +17,10 @@ import org.apache.logging.log4j.Logger;
  * @since 5/16/21.
  */
 @SuppressWarnings("unused")
-public final class Events {
+public final class Tester {
     private static final Logger LOGGER = LogManager.getLogger();
 
-    private Events() {
+    private Tester() {
     }
 
     public static void gameStarted() {
@@ -32,5 +32,7 @@ public final class Events {
         final var block = Registry.register(Registries.blocks(), new Identifier("test_mod", "test_block"), Block.create(BlockProperties.of(Material.metal())));
         final var blockItem = Registry.register(Registries.items(), new Identifier("test_mod", "test_block"), BlockItem.create(block, ItemProperties.create().category(ItemCategory.buildingBlocks())));
         LOGGER.info("soulfire created test block: {}, with item: {}", block, blockItem);
+        final var lookup = Registries.items().get(new Identifier("test_mod", "test_item"));
+        LOGGER.info("soulfire looked up test item and got: {}", lookup);
     }
 }

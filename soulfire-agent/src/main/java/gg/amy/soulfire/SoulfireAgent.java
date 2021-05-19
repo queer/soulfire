@@ -4,9 +4,7 @@ import gg.amy.soulfire.bytecode.ClassMap;
 import gg.amy.soulfire.bytecode.Injector;
 import gg.amy.soulfire.bytecode.Redefiner;
 import gg.amy.soulfire.bytecode.bridge.BridgeSynthesiser;
-import gg.amy.soulfire.bytecode.injectors.ClientBrandRetrieverInjector;
-import gg.amy.soulfire.bytecode.injectors.MinecraftInjector;
-import gg.amy.soulfire.bytecode.injectors.TitleScreenInjector;
+import gg.amy.soulfire.bytecode.injectors.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -46,7 +44,9 @@ public final class SoulfireAgent {
             final var injectors = List.of(
                     new MinecraftInjector(),
                     new ClientBrandRetrieverInjector(),
-                    new TitleScreenInjector()
+                    new TitleScreenInjector(),
+                    new ResourceLocationInjector(),
+                    new ResourceKeyInjector()
             );
             final var redefiners = List.<Redefiner>of();
 

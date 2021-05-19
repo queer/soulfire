@@ -125,7 +125,6 @@ public final class BridgeSynthesiser implements Opcodes {
 
                         final var node = new MethodNode(ACC_PUBLIC, m.getName(), Method.getMethod(m).getDescriptor(), null, null);
                         LOGGER.warn("SYNTH:");
-                        InsnPrinter.print(insns);
                         node.instructions.clear();
                         node.instructions.add(insns);
                         cn.methods.add(node);
@@ -139,10 +138,12 @@ public final class BridgeSynthesiser implements Opcodes {
                         final var obfField = target.field(m.getAnnotation(BridgeField.class).value());
 
                         final var insns = new InsnList();
-                        final var obfDesc = obfField.type();
+                        final var obfDesc = obfField.desc();
+                        logger.warn("GETFIELD {} {} {}", $(target.obfName()), obfField.obfName(), obfDesc);
 
                         // 1.5. Synthesise load and return insns.
-                        insns.add(new FieldInsnNode(GETFIELD, target.obfName().replace('.', '/'), obfField.name(), obfDesc));
+                        insns.add(new VarInsnNode(ALOAD, 0));
+                        insns.add(new FieldInsnNode(GETFIELD, $(target.obfName()), obfField.obfName(), obfDesc));
 
                         insns.add(new InsnNode(switch(obfDesc.charAt(obfDesc.length() - 1)) {
                             case 'Z', 'I', 'C', 'S', 'B' -> IRETURN;
@@ -154,6 +155,7 @@ public final class BridgeSynthesiser implements Opcodes {
                         }));
 
                         final var node = new MethodNode(ACC_PUBLIC, m.getName(), Method.getMethod(m).getDescriptor(), null, null);
+                        InsnPrinter.print(insns);
                         node.instructions.clear();
                         node.instructions.add(insns);
                         cn.methods.add(node);
@@ -227,7 +229,6 @@ public final class BridgeSynthesiser implements Opcodes {
 
                         mn.instructions.clear();
                         mn.instructions.add(insns);
-                        InsnPrinter.print(mn.instructions);
                         mn.maxLocals = m.getParameterCount() * 2;
                         mn.maxStack = m.getParameterCount() * 2;
                         logger.info("Redefined {}#{}.", bridgeClass.getName(), mn.name);

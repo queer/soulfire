@@ -2,9 +2,12 @@ package gg.amy.soulfire.api.minecraft.registry;
 
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeField;
+import gg.amy.soulfire.annotations.BridgeMethod;
 import gg.amy.soulfire.annotations.Nontransforming;
 import gg.amy.soulfire.api.minecraft.block.Block;
 import gg.amy.soulfire.api.minecraft.item.Item;
+
+import javax.annotation.Nonnull;
 
 import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
 
@@ -24,7 +27,7 @@ public interface Registries {
     }
 
     @BridgeField("FLUID")
-    static Registry fluids() {
+    static DefaultedRegistry fluids() {
         return unimplementedReturn();
     }
 
@@ -34,7 +37,7 @@ public interface Registries {
     }
 
     @BridgeField("BLOCK")
-    static Registry<Block> blocks() {
+    static DefaultedRegistry<Block> blocks() {
         return unimplementedReturn();
     }
 
@@ -44,17 +47,17 @@ public interface Registries {
     }
 
     @BridgeField("ENTITY_TYPE")
-    static Registry entityTypes() {
+    static DefaultedRegistry entityTypes() {
         return unimplementedReturn();
     }
 
     @BridgeField("ITEM")
-    static Registry<Item> items() {
+    static DefaultedRegistry<Item> items() {
         return unimplementedReturn();
     }
 
     @BridgeField("POTION")
-    static Registry potions() {
+    static DefaultedRegistry potions() {
         return unimplementedReturn();
     }
 
@@ -69,7 +72,7 @@ public interface Registries {
     }
 
     @BridgeField("MOTIVE")
-    static Registry motives() {
+    static DefaultedRegistry motives() {
         return unimplementedReturn();
     }
 
@@ -79,7 +82,7 @@ public interface Registries {
     }
 
     @BridgeField("CHUNK_STATUS")
-    static Registry chunkStatuses() {
+    static DefaultedRegistry chunkStatuses() {
         return unimplementedReturn();
     }
 
@@ -119,27 +122,27 @@ public interface Registries {
     }
 
     @BridgeField("VILLAGER_TYPE")
-    static Registry villagerTypes() {
+    static DefaultedRegistry villagerTypes() {
         return unimplementedReturn();
     }
 
     @BridgeField("VILLAGER_PROFESSION")
-    static Registry villagerProfessions() {
+    static DefaultedRegistry villagerProfessions() {
         return unimplementedReturn();
     }
 
     @BridgeField("POINT_OF_INTEREST_TYPE")
-    static Registry pointOfInterestTypes() {
+    static DefaultedRegistry pointOfInterestTypes() {
         return unimplementedReturn();
     }
 
     @BridgeField("MEMORY_MODULE_TYPE")
-    static Registry memoryModuleTypes() {
+    static DefaultedRegistry memoryModuleTypes() {
         return unimplementedReturn();
     }
 
     @BridgeField("SENSOR_TYPE")
-    static Registry sensorTypes() {
+    static DefaultedRegistry sensorTypes() {
         return unimplementedReturn();
     }
 
@@ -545,5 +548,46 @@ public interface Registries {
 
     @Bridge("net.minecraft.resources.ResourceKey")
     interface ResourceKey {
+        @Nonnull
+        @BridgeMethod("<init>(net.minecraft.resources.ResourceLocation,net.minecraft.resources.ResourceLocation)")
+        static ResourceKey of(@Nonnull final ResourceLocation registryLocation, @Nonnull final ResourceLocation thingLocation) {
+            return unimplementedReturn();
+        }
+
+        @Nonnull
+        @BridgeMethod("createRegistryKey(net.minecraft.resources.ResourceLocation)")
+        static ResourceKey createRegistryKey(@Nonnull final ResourceLocation location) {
+            return unimplementedReturn();
+        }
+
+        @Nonnull
+        @BridgeMethod("create(net.minecraft.resources.ResourceKey,net.minecraft.resources.ResourceLocation)")
+        static ResourceKey of(@Nonnull final ResourceKey key, @Nonnull final ResourceLocation location) {
+            return unimplementedReturn();
+        }
+    }
+
+    @Bridge("net.minecraft.resources.ResourceLocation")
+    interface ResourceLocation {
+//        @BridgeMethod("<init>(java.lang.String[])")
+        static ResourceLocation of(@Nonnull final String[] parts) {
+            return unimplementedReturn();
+        }
+
+        @BridgeMethod("<init>(java.lang.String)")
+        static ResourceLocation of(@Nonnull final String id) {
+            return unimplementedReturn();
+        }
+
+        @BridgeMethod("<init>(java.lang.String,java.lang.String)")
+        static ResourceLocation of(@Nonnull final String namespace, @Nonnull final String id) {
+            return unimplementedReturn();
+        }
+
+        @BridgeMethod("getNamespace()")
+        String namespace();
+
+        @BridgeMethod("getPath()")
+        String path();
     }
 }

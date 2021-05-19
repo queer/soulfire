@@ -1,6 +1,7 @@
 package gg.amy.soulfire.bytecode.mapping;
 
 import gg.amy.soulfire.bytecode.ClassMap;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -69,11 +70,15 @@ public record MappedMethod(@Nonnull String name, @Nonnull String obfName, @Nonnu
     private String parseComplex(@Nonnull final String type) {
         if(type.contains(".")) {
             final var name = (type.startsWith("L") ? type.replaceFirst("L", "") : type).replace(";", "");
+            var arrs = "";
+            if(type.endsWith("[]")) {
+                arrs = "[".repeat(Math.max(0, StringUtils.countMatches(type, "[]")));
+            }
             final var lookup = ClassMap.lookup(name);
             if(lookup != null) {
                 return lookup.descriptor();
             } else {
-                return 'L' + type.replace('.', '/') + ';';
+                return arrs + 'L' + type.replace('.', '/').replaceAll("\\[\\]", "") + ';';
             }
         } else if(type.startsWith("[")) {
             return '[' + parseType(type.substring(1));

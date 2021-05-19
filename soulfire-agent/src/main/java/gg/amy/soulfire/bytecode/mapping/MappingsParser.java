@@ -51,6 +51,8 @@ public final class MappingsParser {
                         final var typeParts = type.split(":", 3);
                         final var returnType = typeParts[2];
                         methods.put(name, new MappedMethod(name, obfName, returnType));
+                    } else if(name.contains("(")) {
+                        methods.put(name, new MappedMethod(name, obfName, type));
                     } else {
                         fields.put(name, new MappedField(name, obfName, type));
                     }

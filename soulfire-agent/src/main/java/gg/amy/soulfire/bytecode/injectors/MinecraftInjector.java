@@ -3,7 +3,7 @@ package gg.amy.soulfire.bytecode.injectors;
 import gg.amy.soulfire.bytecode.ClassMap;
 import gg.amy.soulfire.bytecode.Injector;
 import gg.amy.soulfire.bytecode.mapping.MappedClass;
-import gg.amy.soulfire.test.Events;
+import gg.amy.soulfire.test.Tester;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -25,7 +25,7 @@ public class MinecraftInjector extends Injector {
         final var run = minecraft.methods().get("run()");
         for(final var m : cn.methods) {
             if(m.name.equals(run.obfName()) && m.desc.equals(run.desc())) {
-                m.instructions.insert(new MethodInsnNode(INVOKESTATIC, $(Events.class), "gameStarted", "()V", false));
+                m.instructions.insert(new MethodInsnNode(INVOKESTATIC, $(Tester.class), "gameStarted", "()V", false));
                 logger.info("Injected Events#gameStarted()");
             }
         }

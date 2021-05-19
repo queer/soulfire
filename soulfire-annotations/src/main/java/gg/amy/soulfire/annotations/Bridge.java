@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * @author amy
  * @since 5/18/21.
  */
-@Target({ElementType.TYPE, ElementType.METHOD})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Bridge {
     String value();
