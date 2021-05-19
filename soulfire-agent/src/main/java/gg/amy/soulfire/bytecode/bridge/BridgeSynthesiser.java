@@ -87,7 +87,9 @@ public final class BridgeSynthesiser implements Opcodes {
                                     for(final Class<?> type : m.getParameterTypes()) {
                                         final var loadInsn = Type.getType(type).getOpcode(ILOAD);
                                         insns.add(new VarInsnNode(loadInsn, counter));
-                                        insns.add(new TypeInsnNode(CHECKCAST, argTypes.get(counter - 1)));
+                                        if(argTypes.get(counter - 1).length() > 1) {
+                                            insns.add(new TypeInsnNode(CHECKCAST, argTypes.get(counter - 1)));
+                                        }
                                         counter += 1;
                                     }
 
@@ -105,6 +107,8 @@ public final class BridgeSynthesiser implements Opcodes {
                                     }));
 
                                     final var node = new MethodNode(ACC_PUBLIC, m.getName(), Method.getMethod(m).getDescriptor(), null, null);
+                                    LOGGER.warn("SYNTH:");
+                                    InsnPrinter.print(insns);
                                     node.instructions.clear();
                                     node.instructions.add(insns);
                                     cn.methods.add(node);
@@ -176,12 +180,14 @@ public final class BridgeSynthesiser implements Opcodes {
                                 for(final Class<?> type : m.getParameterTypes()) {
                                     final var loadInsn = Type.getType(type).getOpcode(ILOAD);
                                     insns.add(new VarInsnNode(loadInsn, counter));
-                                    insns.add(new TypeInsnNode(CHECKCAST, argTypes.get(counter)));
+                                    if(argTypes.get(counter).length() > 1) {
+                                        insns.add(new TypeInsnNode(CHECKCAST, argTypes.get(counter)));
+                                    }
                                     counter += 1;
                                 }
 
                                 insns.add(new MethodInsnNode(INVOKESTATIC, target.obfName().replace('.', '/'), obfMethod.obfName(), obfDesc, false));
-                                // insns.add(new TypeInsnNode(CHECKCAST, $(m.getReturnType().getName())));
+
                                 // 2.3. Synthesise correct return insn.
                                 insns.add(new InsnNode(switch(obfDesc.charAt(obfDesc.length() - 1)) {
                                     case 'Z', 'I', 'C', 'S', 'B' -> IRETURN;
@@ -213,6 +219,7 @@ public final class BridgeSynthesiser implements Opcodes {
 
                                 final var mn = targetNode.get();
                                 final var insns = new InsnList();
+                                LOGGER.warn("FETCHING FIELD: {}", m.getAnnotation(BridgeField.class).value());
                                 final var obfDesc = obfField.desc();
 
                                 // 2.5. Synthesise load and return insns.

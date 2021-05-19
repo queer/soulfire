@@ -4,8 +4,8 @@ package gg.amy.soulfire.api;
  * @author amy
  * @since 5/17/21.
  */
-public final class Placeholder {
-    private Placeholder() {
+public final class YouFuckedUp {
+    private YouFuckedUp() {
     }
 
     public static void unimplemented() {

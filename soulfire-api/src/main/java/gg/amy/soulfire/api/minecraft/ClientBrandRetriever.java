@@ -3,7 +3,7 @@ package gg.amy.soulfire.api.minecraft;
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeMethod;
 
-import static gg.amy.soulfire.api.Placeholder.unimplementedReturn;
+import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
 
 /**
  * @author amy
