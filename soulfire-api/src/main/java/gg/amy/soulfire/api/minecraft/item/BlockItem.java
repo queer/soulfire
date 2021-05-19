@@ -6,7 +6,7 @@ import gg.amy.soulfire.api.minecraft.block.Block;
 
 import javax.annotation.Nonnull;
 
-import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
+import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 
 /**
  * @author amy
@@ -17,6 +17,6 @@ public interface BlockItem extends Item {
     @Nonnull
     @BridgeMethod("<init>(net.minecraft.world.level.block.Block,net.minecraft.world.item.Item$Properties)")
     static BlockItem create(@Nonnull final Block block, @Nonnull final ItemProperties properties) {
-        return unimplementedReturn();
+        return unimplemented();
     }
 }

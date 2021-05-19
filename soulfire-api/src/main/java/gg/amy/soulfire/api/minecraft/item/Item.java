@@ -5,7 +5,7 @@ import gg.amy.soulfire.annotations.BridgeMethod;
 
 import javax.annotation.Nonnull;
 
-import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
+import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 
 /**
  * @author amy
@@ -16,7 +16,7 @@ public interface Item {
     @Nonnull
     @BridgeMethod("<init>(net.minecraft.world.item.Item$Properties)")
     static Item create(@Nonnull final ItemProperties properties) {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeMethod("getMaxStackSize()")

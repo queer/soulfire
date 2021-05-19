@@ -11,7 +11,7 @@ import javax.annotation.Nonnull;
 
 import java.util.Optional;
 
-import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
+import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 
 /**
  * @author amy
@@ -25,7 +25,7 @@ public interface Registry<T> {
 
     @BridgeMethod("register(net.minecraft.core.Registry,java.lang.String,java.lang.Object)")
     static <E> E register(@Nonnull final Registry<E> registry, @Nonnull final String identifier, @Nonnull final E obj) {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeMethod("get(net.minecraft.resources.ResourceKey)")

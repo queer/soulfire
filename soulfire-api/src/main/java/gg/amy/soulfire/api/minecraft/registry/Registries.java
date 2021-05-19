@@ -9,7 +9,7 @@ import gg.amy.soulfire.api.minecraft.item.Item;
 
 import javax.annotation.Nonnull;
 
-import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
+import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 
 /**
  * @author amy
@@ -23,147 +23,147 @@ public interface Registries {
 
     @BridgeField("SOUND_EVENT")
     static Registry soundEvents() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("FLUID")
     static DefaultedRegistry fluids() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("MOB_EFFECT")
     static Registry mobEffects() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("BLOCK")
     static DefaultedRegistry<Block> blocks() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("ENCHANTMENT")
     static Registry enchantments() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("ENTITY_TYPE")
     static DefaultedRegistry entityTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("ITEM")
     static DefaultedRegistry<Item> items() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("POTION")
     static DefaultedRegistry potions() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("PARTICLE_TYPE")
     static Registry particleTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("BLOCK_ENTITY_TYPE")
     static Registry blockEntityTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("MOTIVE")
     static DefaultedRegistry motives() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("CUSTOM_STAT")
     static Registry customStats() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("CHUNK_STATUS")
     static DefaultedRegistry chunkStatuses() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("RULE_TEST")
     static Registry ruleTests() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("POS_RULE_TEST")
     static Registry posRuleTests() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("MENU")
     static Registry menus() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("RECIPE_TYPE")
     static Registry recipeTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("RECIPE_SERIALIZER")
     static Registry recipeSerializers() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("ATTRIBUTE")
     static Registry attributes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("STAT_TYPE")
     static Registry statTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("VILLAGER_TYPE")
     static DefaultedRegistry villagerTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("VILLAGER_PROFESSION")
     static DefaultedRegistry villagerProfessions() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("POINT_OF_INTEREST_TYPE")
     static DefaultedRegistry pointOfInterestTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("MEMORY_MODULE_TYPE")
     static DefaultedRegistry memoryModuleTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("SENSOR_TYPE")
     static DefaultedRegistry sensorTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("SCHEDULE")
     static Registry schedules() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("ACTIVITY")
     static Registry activities() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("LOOT_POOL_ENTRY_TYPE")
     static Registry lootEntries() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("LOOT_FUNCTION_TYPE")
     static Registry lootFunctions() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
 //    TODO: What are these four?
@@ -189,97 +189,97 @@ public interface Registries {
 
     @BridgeField("NOISE_GENERATOR_SETTINGS_REGISTRY")
     static Registry noiseGeneratorSettings() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("CONFIGURED_SURFACE_BUILDER_REGISTRY")
     static Registry configuredSurfaceBuilders() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("CONFIGURED_CARVER_REGISTRY")
     static Registry configuredCarvers() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("CONFIGURED_FEATURE_REGISTRY")
     static Registry configuredFeatures() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("CONFIGURED_STRUCTURE_FEATURE_REGISTRY")
     static Registry configuredStructureFeatures() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("PROCESSOR_LIST_REGISTRY")
     static Registry processorLists() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TEMPLATE_POOL_REGISTRY")
     static Registry templatePools() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("BIOME_REGISTRY")
     static Registry biomes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("SURFACE_BUILDER")
     static Registry surfaceBuilders() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("BLOCKSTATE_PROVIDER_TYPES")
     static Registry blockStateProviderTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("BLOCK_PLACER_TYPES")
     static Registry blockPlacerTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("FOLIAGE_PLACER_TYPES")
     static Registry foliagePlacerTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TRUNK_PLACER_TYPES")
     static Registry trunkPlacerTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TREE_DECORATOR_TYPES")
     static Registry treeDecoratorTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("FEATURE_SIZE_TYPES")
     static Registry featureSizeTypes() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("BIOME_SOURCE")
     static Registry biomeSources() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("CHUNK_GENERATOR")
     static Registry chunkGenerators() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("STRUCTURE_PROCESSOR")
     static Registry structureProcessors() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("STRUCTURE_POOL_ELEMENT")
     static Registry structurePoolElements() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @Nontransforming
@@ -287,262 +287,262 @@ public interface Registries {
     interface ResourceKeys {
         @BridgeField("SOUND_EVENT_REGISTRY")
         static ResourceKey soundEvents() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("FLUID_REGISTRY")
         static ResourceKey fluids() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("MOB_EFFECT_REGISTRY")
         static ResourceKey mobEffects() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("BLOCK_REGISTRY")
         static ResourceKey blocks() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("ENCHANTMENT_REGISTRY")
         static ResourceKey enchantments() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("ENTITY_TYPE_REGISTRY")
         static ResourceKey entityTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("ITEM_REGISTRY")
         static ResourceKey items() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("POTION_REGISTRY")
         static ResourceKey potions() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("PARTICLE_TYPE_REGISTRY")
         static ResourceKey particleTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("BLOCK_ENTITY_TYPE_REGISTRY")
         static ResourceKey blockEntityTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("MOTIVE_REGISTRY")
         static ResourceKey motives() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("CUSTOM_STAT_REGISTRY")
         static ResourceKey customStats() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("CHUNK_STATUS_REGISTRY")
         static ResourceKey chunkStatuses() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("RULE_TEST_REGISTRY")
         static ResourceKey ruleTests() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("POS_RULE_TEST_REGISTRY")
         static ResourceKey posRuleTests() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("MENU_REGISTRY")
         static ResourceKey menus() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("RECIPE_TYPE_REGISTRY")
         static ResourceKey recipeTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("RECIPE_SERIALIZER_REGISTRY")
         static ResourceKey recipeSerializers() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("ATTRIBUTE_REGISTRY")
         static ResourceKey attributes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("STAT_TYPE_REGISTRY")
         static ResourceKey statTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("VILLAGER_TYPE_REGISTRY")
         static ResourceKey villagerTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("VILLAGER_PROFESSION_REGISTRY")
         static ResourceKey villagerProfessions() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("POINT_OF_INTEREST_TYPE_REGISTRY")
         static ResourceKey pointOfInterestTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("MEMORY_MODULE_TYPE_REGISTRY")
         static ResourceKey memoryModuleTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("SENSOR_TYPE_REGISTRY")
         static ResourceKey sensorTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("SCHEDULE_REGISTRY")
         static ResourceKey schedules() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("ACTIVITY_REGISTRY")
         static ResourceKey activities() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("LOOT_ENTRY_REGISTRY")
         static ResourceKey lootEntries() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("LOOT_FUNCTION_REGISTRY")
         static ResourceKey lootFunctions() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("LOOT_ITEM_REGISTRY")
         static ResourceKey lootItems() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("DIMENSION_TYPE_REGISTRY")
         static ResourceKey dimensionTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("DIMENSION_REGISTRY")
         static ResourceKey dimensions() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("LEVEL_STEM_REGISTRY")
         static ResourceKey levelStems() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("NOISE_GENERATOR_SETTINGS_REGISTRY")
         static ResourceKey noiseGeneratorSettings() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("CONFIGURED_SURFACE_BUILDER_REGISTRY")
         static ResourceKey configuredSurfaceBuilders() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("CONFIGURED_CARVER_REGISTRY")
         static ResourceKey configuredCarvers() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("CONFIGURED_FEATURE_REGISTRY")
         static ResourceKey configuredFeatures() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("CONFIGURED_STRUCTURE_FEATURE_REGISTRY")
         static ResourceKey configuredStructureFeatures() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("PROCESSOR_LIST_REGISTRY")
         static ResourceKey processorLists() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("TEMPLATE_POOL_REGISTRY")
         static ResourceKey templatePools() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("BIOME_REGISTRY")
         static ResourceKey biomes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("SURFACE_BUILDER_REGISTRY")
         static ResourceKey surfaceBuilders() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("BLOCK_STATE_PROVIDER_TYPE_REGISTRY")
         static ResourceKey blockStateProviderTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("BLOCK_PLACER_TYPE_REGISTRY")
         static ResourceKey blockPlacerTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("FOLIAGE_PLACER_TYPE_REGISTRY")
         static ResourceKey foliagePlacerTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("TRUNK_PLACER_TYPE_REGISTRY")
         static ResourceKey trunkPlacerTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("TREE_DECORATOR_TYPE_REGISTRY")
         static ResourceKey treeDecoratorTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("FEATURE_SIZE_TYPE_REGISTRY")
         static ResourceKey featureSizeTypes() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("BIOME_SOURCE_REGISTRY")
         static ResourceKey biomeSources() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("CHUNK_GENERATOR_REGISTRY")
         static ResourceKey chunkGenerators() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("STRUCTURE_PROCESSOR_REGISTRY")
         static ResourceKey structureProcessors() {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeField("STRUCTURE_POOL_ELEMENT_REGISTRY")
         static ResourceKey structurePoolElements() {
-            return unimplementedReturn();
+            return unimplemented();
         }
     }
 
@@ -551,19 +551,19 @@ public interface Registries {
         @Nonnull
         @BridgeMethod("<init>(net.minecraft.resources.ResourceLocation,net.minecraft.resources.ResourceLocation)")
         static ResourceKey of(@Nonnull final ResourceLocation registryLocation, @Nonnull final ResourceLocation thingLocation) {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @Nonnull
         @BridgeMethod("createRegistryKey(net.minecraft.resources.ResourceLocation)")
         static ResourceKey createRegistryKey(@Nonnull final ResourceLocation location) {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @Nonnull
         @BridgeMethod("create(net.minecraft.resources.ResourceKey,net.minecraft.resources.ResourceLocation)")
         static ResourceKey of(@Nonnull final ResourceKey key, @Nonnull final ResourceLocation location) {
-            return unimplementedReturn();
+            return unimplemented();
         }
     }
 
@@ -571,17 +571,17 @@ public interface Registries {
     interface ResourceLocation {
 //        @BridgeMethod("<init>(java.lang.String[])")
         static ResourceLocation of(@Nonnull final String[] parts) {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeMethod("<init>(java.lang.String)")
         static ResourceLocation of(@Nonnull final String id) {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeMethod("<init>(java.lang.String,java.lang.String)")
         static ResourceLocation of(@Nonnull final String namespace, @Nonnull final String id) {
-            return unimplementedReturn();
+            return unimplemented();
         }
 
         @BridgeMethod("getNamespace()")

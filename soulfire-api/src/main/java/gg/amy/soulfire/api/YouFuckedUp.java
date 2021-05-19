@@ -8,11 +8,11 @@ public final class YouFuckedUp {
     private YouFuckedUp() {
     }
 
-    public static void unimplemented() {
+    public static void unimplementedVoid() {
         throw new IllegalStateException("Unimplemented! Did you forget to inject?");
     }
 
-    public static <T> T unimplementedReturn() {
+    public static <T> T unimplemented() {
         throw new IllegalStateException("Unimplemented! Did you forget to inject?");
     }
 }

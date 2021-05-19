@@ -3,7 +3,7 @@ package gg.amy.soulfire.api.minecraft;
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeMethod;
 
-import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
+import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 
 /**
  * @author amy
@@ -13,6 +13,6 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
 public interface ClientBrandRetriever {
     @BridgeMethod("getClientModName()")
     static String clientModName() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 }

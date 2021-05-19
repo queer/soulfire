@@ -5,7 +5,7 @@ import gg.amy.soulfire.annotations.BridgeMethod;
 
 import javax.annotation.Nonnull;
 
-import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
+import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 
 /**
  * @author amy
@@ -16,6 +16,6 @@ public
 interface BlockProperties {
     @BridgeMethod("of(net.minecraft.world.level.material.Material)")
     static BlockProperties of(@Nonnull final Material material) {
-        return unimplementedReturn();
+        return unimplemented();
     }
 }

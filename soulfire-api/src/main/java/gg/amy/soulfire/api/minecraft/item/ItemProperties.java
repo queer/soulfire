@@ -6,7 +6,7 @@ import gg.amy.soulfire.annotations.BridgeMethod;
 import javax.annotation.Nonnegative;
 import javax.annotation.Nonnull;
 
-import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
+import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 
 /**
  * @author amy
@@ -17,7 +17,7 @@ public interface ItemProperties {
     @Nonnull
     @BridgeMethod("<init>()")
     static ItemProperties create() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @Nonnull

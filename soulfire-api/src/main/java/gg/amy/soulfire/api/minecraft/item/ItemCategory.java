@@ -3,7 +3,7 @@ package gg.amy.soulfire.api.minecraft.item;
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeField;
 
-import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
+import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 
 /**
  * @author amy
@@ -13,66 +13,66 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
 public interface ItemCategory {
     @BridgeField("TAB_BUILDING_BLOCKS")
     static ItemCategory buildingBlocks() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TAB_DECORATIONS")
     static ItemCategory decorations() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TAB_REDSTONE")
     static ItemCategory redstone() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TAB_TRANSPORTATION")
     static ItemCategory transportation() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TAB_MISC")
     static ItemCategory misc() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TAB_SEARCH")
     static ItemCategory search() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TAB_FOOD")
     static ItemCategory food() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TAB_TOOLS")
     static ItemCategory tools() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TAB_COMBAT")
     static ItemCategory combat() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TAB_BREWING")
     static ItemCategory brewing() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TAB_MATERIALS")
     static ItemCategory materials() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TAB_HOTBAR")
     static ItemCategory hotbar() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TAB_INVENTORY")
     static ItemCategory inventory() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 }

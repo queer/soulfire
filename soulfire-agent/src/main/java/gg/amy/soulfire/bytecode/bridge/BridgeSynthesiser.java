@@ -99,15 +99,24 @@ public final class BridgeSynthesiser implements Opcodes {
                         // 1.2. Synthesise param-load insns.
                         insns.add(new VarInsnNode(ALOAD, 0)); // this
 
-                        int counter = 1;
+                        // We track a separate stack pointer because longs and
+                        // doubles take up two slots in locals and stack, but
+                        // we still need to load param types normally.
+                        int argPointer = 0;
+                        int stackPointer = 1;
                         final var argTypes = obfMethod.argTypes();
                         for(final Class<?> type : m.getParameterTypes()) {
                             final var loadInsn = Type.getType(type).getOpcode(ILOAD);
-                            insns.add(new VarInsnNode(loadInsn, counter));
-                            if(argTypes.get(counter - 1).length() > 1) {
-                                insns.add(new TypeInsnNode(CHECKCAST, argTypes.get(counter - 1)));
+                            insns.add(new VarInsnNode(loadInsn, stackPointer));
+                            if(argTypes.get(argPointer).length() > 1) {
+                                insns.add(new TypeInsnNode(CHECKCAST, argTypes.get(argPointer)));
                             }
-                            counter += 1;
+                            argPointer += 1;
+                            if(type.equals(double.class) || type.equals(long.class)) {
+                                stackPointer += 2;
+                            } else {
+                                stackPointer += 1;
+                            }
                         }
 
                         insns.add(new MethodInsnNode(INVOKEVIRTUAL, target.obfName().replace('.', '/'), obfMethod.obfName(), obfDesc, false));
@@ -179,7 +188,6 @@ public final class BridgeSynthesiser implements Opcodes {
                 for(final var m : bridgeClass.getDeclaredMethods()) {
                     // 2.1. Detect static bridge methods
                     if(m.isAnnotationPresent(BridgeMethod.class) && Modifier.isStatic(m.getModifiers())) {
-                        // TODO: Allow bridging statics to constructors for factory methods
                         final var obfMethod = target.method(m.getAnnotation(BridgeMethod.class).value());
                         final var reflDesc = Method.getMethod(m).getDescriptor();
                         // 2.2. Find matching MethodNode.
@@ -198,15 +206,24 @@ public final class BridgeSynthesiser implements Opcodes {
                             insns.add(new InsnNode(DUP));
                         }
 
-                        int counter = 0;
+                        // We track a separate stack pointer because longs and
+                        // doubles take up two slots in locals and stack, but
+                        // we still need to load param types normally.
+                        int argPointer = 0;
+                        int stackPointer = 0;
                         final var argTypes = obfMethod.argTypes();
                         for(final Class<?> type : m.getParameterTypes()) {
                             final var loadInsn = Type.getType(type).getOpcode(ILOAD);
-                            insns.add(new VarInsnNode(loadInsn, counter));
-                            if(argTypes.get(counter).length() > 1) {
-                                insns.add(new TypeInsnNode(CHECKCAST, argTypes.get(counter)));
+                            insns.add(new VarInsnNode(loadInsn, stackPointer));
+                            if(argTypes.get(argPointer).length() > 1) {
+                                insns.add(new TypeInsnNode(CHECKCAST, argTypes.get(argPointer)));
                             }
-                            counter += 1;
+                            argPointer += 1;
+                            if(type.equals(double.class) || type.equals(long.class)) {
+                                stackPointer += 2;
+                            } else {
+                                stackPointer += 1;
+                            }
                         }
 
                         if(obfMethod.obfName().startsWith("<init>")) {
@@ -227,6 +244,7 @@ public final class BridgeSynthesiser implements Opcodes {
                             }));
                         }
 
+                        InsnPrinter.print(insns);
                         mn.instructions.clear();
                         mn.instructions.add(insns);
                         mn.maxLocals = m.getParameterCount() * 2;

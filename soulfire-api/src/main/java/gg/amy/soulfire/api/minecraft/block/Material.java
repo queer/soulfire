@@ -3,7 +3,7 @@ package gg.amy.soulfire.api.minecraft.block;
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeField;
 
-import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
+import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 
 /**
  * @author amy
@@ -14,221 +14,221 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
 public interface Material {
     @BridgeField("AIR")
     static Material air() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("STRUCTURAL_AIR")
     static Material structuralAir() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("PORTAL")
     static Material portal() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("CLOTH_DECORATION")
     static Material clothDecoration() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("PLANT")
     static Material plant() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("WATER_PLANT")
     static Material waterPlant() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("REPLACEABLE_PLANT")
     static Material replaceablePlant() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("REPLACEABLE_FIREPROOF_PLANT")
     static Material replaceableFireproofPlant() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("REPLACEABLE_WATER_PLANT")
     static Material replaceableWaterPlant() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("WATER")
     static Material water() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("BUBBLE_COLUMN")
     static Material bubbleColumn() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("LAVA")
     static Material lava() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("TOP_SNOW")
     static Material topSnow() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("FIRE")
     static Material fire() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("DECORATION")
     static Material decoration() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("WEB")
     static Material web() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("BUILDABLE_GLASS")
     static Material buildableGlass() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("CLAY")
     static Material clay() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("DIRT")
     static Material dirt() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("GRASS")
     static Material grass() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("ICE_SOLID")
     static Material iceSolid() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("SAND")
     static Material sand() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("SPONGE")
     static Material sponge() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("SHULKER_SHELL")
     static Material shulkerShell() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("WOOD")
     static Material wood() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("NETHER_WOOD")
     static Material netherWood() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("BAMBOO_SAPLING")
     static Material bambooSapling() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("BAMBOO")
     static Material bamboo() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("WOOL")
     static Material wool() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("EXPLOSIVE")
     static Material explosive() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("LEAVES")
     static Material leaves() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("GLASS")
     static Material glass() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("ICE")
     static Material ice() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("CACTUS")
     static Material cactus() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("STONE")
     static Material stone() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("METAL")
     static Material metal() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("SNOW")
     static Material snow() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("HEAVY_METAL")
     static Material heavyMetal() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("BARRIER")
     static Material barrier() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("PISTON")
     static Material piston() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("CORAL")
     static Material coral() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("VEGETABLE")
     static Material vegetable() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("EGG")
     static Material egg() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 
     @BridgeField("CAKE")
     static Material cake() {
-        return unimplementedReturn();
+        return unimplemented();
     }
 }
