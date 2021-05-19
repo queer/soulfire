@@ -5,9 +5,7 @@ import org.apache.logging.log4j.Logger;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.util.CheckClassAdapter;
 
-import java.io.PrintWriter;
 import java.lang.instrument.ClassFileTransformer;
 import java.security.ProtectionDomain;
 

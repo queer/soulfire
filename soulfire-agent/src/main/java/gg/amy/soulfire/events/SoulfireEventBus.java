@@ -3,8 +3,6 @@ package gg.amy.soulfire.events;
 import gg.amy.soulfire.api.events.EventBus;
 
 import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;

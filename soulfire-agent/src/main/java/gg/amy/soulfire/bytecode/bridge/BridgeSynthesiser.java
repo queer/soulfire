@@ -19,7 +19,6 @@ import javax.annotation.Nonnull;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 

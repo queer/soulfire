@@ -30,6 +30,7 @@ public interface EventBus {
 
     /**
      * Unregisters the given handler for a specific event.
+     *
      * @param event
      * @param listener
      * @param <T>

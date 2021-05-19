@@ -4,7 +4,6 @@ import gg.amy.soulfire.api.minecraft.block.Block;
 import gg.amy.soulfire.bytecode.ClassMap;
 import gg.amy.soulfire.bytecode.Redefiner;
 import gg.amy.soulfire.bytecode.mapping.MappedClass;
-import gg.amy.soulfire.utils.InsnPrinter;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.*;
 
