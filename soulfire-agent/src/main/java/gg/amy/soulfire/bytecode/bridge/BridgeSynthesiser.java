@@ -19,6 +19,7 @@ import javax.annotation.Nonnull;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
@@ -70,11 +71,12 @@ public final class BridgeSynthesiser implements Opcodes {
                         protected void inject(final ClassReader cr, final ClassNode cn) {
                             cn.interfaces.add($(bridgeClass));
 
-                            for(final var m : bridgeClass.getMethods()) {
+                            for(final var m : bridgeClass.getDeclaredMethods()) {
                                 // 1.1. Detect virtual bridge methods.
                                 if(m.isAnnotationPresent(BridgeMethod.class) && !Modifier.isStatic(m.getModifiers())) {
                                     logger.info("Synthesising non-static bridge {}#{}!", bridgeClass.getName(), m.getName());
-                                    final var obfMethod = target.method(m.getAnnotation(BridgeMethod.class).value());
+                                    final var obfMethod = target.method(m.getDeclaredAnnotation(BridgeMethod.class).value());
+                                    logger.warn("Targeting method: {}", m.getDeclaredAnnotation(BridgeMethod.class).value());
 
                                     final var insns = new InsnList();
                                     final var obfDesc = obfMethod.descNoComma();
@@ -159,9 +161,10 @@ public final class BridgeSynthesiser implements Opcodes {
                 i.redefineClasses(new Redefiner(bridgeClass.getName()) {
                     @Override
                     protected void inject(final ClassReader cr, final ClassNode cn) {
-                        for(final var m : bridgeClass.getMethods()) {
+                        for(final var m : bridgeClass.getDeclaredMethods()) {
                             // 2.1. Detect static bridge methods
                             if(m.isAnnotationPresent(BridgeMethod.class) && Modifier.isStatic(m.getModifiers())) {
+                                // TODO: Allow bridging statics to constructors for factory methods
                                 final var obfMethod = target.method(m.getAnnotation(BridgeMethod.class).value());
                                 final var reflDesc = Method.getMethod(m).getDescriptor();
                                 // 2.2. Find matching MethodNode.

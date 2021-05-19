@@ -3,6 +3,7 @@ package gg.amy.soulfire.api.minecraft.registry;
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeField;
 import gg.amy.soulfire.annotations.Nontransforming;
+import gg.amy.soulfire.api.minecraft.block.Block;
 import gg.amy.soulfire.api.minecraft.item.Item;
 
 import static gg.amy.soulfire.api.YouFuckedUp.unimplementedReturn;
@@ -33,7 +34,7 @@ public interface Registries {
     }
 
     @BridgeField("BLOCK")
-    static Registry blocks() {
+    static Registry<Block> blocks() {
         return unimplementedReturn();
     }
 

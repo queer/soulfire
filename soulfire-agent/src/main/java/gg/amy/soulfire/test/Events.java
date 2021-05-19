@@ -2,10 +2,10 @@ package gg.amy.soulfire.test;
 
 import gg.amy.soulfire.api.minecraft.ClientBrandRetriever;
 import gg.amy.soulfire.api.minecraft.Minecraft;
-import gg.amy.soulfire.api.minecraft.item.Identifier;
-import gg.amy.soulfire.api.minecraft.item.Item;
-import gg.amy.soulfire.api.minecraft.item.ItemCategory;
-import gg.amy.soulfire.api.minecraft.item.ItemProperties;
+import gg.amy.soulfire.api.minecraft.block.Block;
+import gg.amy.soulfire.api.minecraft.block.BlockProperties;
+import gg.amy.soulfire.api.minecraft.block.Material;
+import gg.amy.soulfire.api.minecraft.item.*;
 import gg.amy.soulfire.api.minecraft.registry.Registries;
 import gg.amy.soulfire.api.minecraft.registry.Registries.ResourceKeys;
 import gg.amy.soulfire.api.minecraft.registry.Registry;
@@ -29,5 +29,8 @@ public final class Events {
         LOGGER.info("soulfire found registry resource key: {}", ResourceKeys.items());
         final var item = Registry.register(Registries.items(), new Identifier("test_mod", "test_item"), Item.create(ItemProperties.create().category(ItemCategory.misc())));
         LOGGER.info("soulfire created test item: {}", item);
+        final var block = Registry.register(Registries.blocks(), new Identifier("test_mod", "test_block"), Block.create(BlockProperties.of(Material.metal())));
+        final var blockItem = Registry.register(Registries.items(), new Identifier("test_mod", "test_block"), BlockItem.create(block, ItemProperties.create().category(ItemCategory.buildingBlocks())));
+        LOGGER.info("soulfire created test block: {}, with item: {}", block, blockItem);
     }
 }
