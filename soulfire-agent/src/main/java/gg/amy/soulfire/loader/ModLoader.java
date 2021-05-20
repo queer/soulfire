@@ -1,30 +1,19 @@
 package gg.amy.soulfire.loader;
 
 import gg.amy.soulfire.api.Soulfire;
-import gg.amy.soulfire.api.events.event.GameReady;
+import gg.amy.soulfire.api.events.event.MinecraftReady;
 import gg.amy.soulfire.api.events.event.MinecraftInit;
 import gg.amy.soulfire.api.events.event.ResourceManagerReload;
 import gg.amy.soulfire.api.minecraft.Minecraft;
-import gg.amy.soulfire.api.minecraft.block.Block;
-import gg.amy.soulfire.api.minecraft.block.BlockProperties;
-import gg.amy.soulfire.api.minecraft.block.Material;
-import gg.amy.soulfire.api.minecraft.item.BlockItem;
-import gg.amy.soulfire.api.minecraft.item.Identifier;
-import gg.amy.soulfire.api.minecraft.item.ItemCategory;
-import gg.amy.soulfire.api.minecraft.item.ItemProperties;
-import gg.amy.soulfire.api.minecraft.registry.Registries;
-import gg.amy.soulfire.api.minecraft.registry.Registry;
 import gg.amy.soulfire.api.minecraft.resource.FileResourcePack;
 import gg.amy.soulfire.api.minecraft.resource.SimpleReloadableResourceManager;
 import gg.amy.soulfire.api.mod.Mod;
-import gg.amy.soulfire.api.mod.lifecycle.Init;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -38,13 +27,22 @@ public final class ModLoader {
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private final Collection<Object> loadedMods = new ArrayList<>();
     private final Collection<File> modJars = new ArrayList<>();
+    private boolean init;
+    private boolean refire;
 
     public void init() {
         Soulfire.soulfire().bus().register(MinecraftInit.class, event -> {
-            logger.info("Initialising soulfire from Minecraft gamedir {}", Minecraft.getInstance().gameDir());
+            if(!init) {
+                init = true;
+                logger.info("Initialising soulfire from Minecraft gamedir {}", Minecraft.getInstance().gameDir());
 
-            locateModJars();
-            loadMods();
+                locateModJars();
+                loadMods();
+            }
+            if(init && !refire) {
+                refire = true;
+                Soulfire.soulfire().bus().fire(new MinecraftInit());
+            }
             return event;
         });
         Soulfire.soulfire().bus().register(ResourceManagerReload.class, event -> {
@@ -52,7 +50,7 @@ public final class ModLoader {
             loadModAssets();
             return event;
         });
-        Soulfire.soulfire().bus().register(GameReady.class, event -> event);
+        Soulfire.soulfire().bus().register(MinecraftReady.class, event -> event);
     }
 
     private void locateModJars() {
@@ -96,18 +94,7 @@ public final class ModLoader {
                         final Class<?> modClass = modClasses.get(0);
                         final var mod = modClass.getConstructor().newInstance();
                         loadedMods.add(mod);
-                        for(final var m : modClass.getDeclaredMethods()) {
-                            if(m.isAnnotationPresent(Init.class)) {
-                                if(!Modifier.isPublic(m.getModifiers())) {
-                                    throw new IllegalStateException(String.format("Unable to access @Init for mod %s! MOD LOADING WILL NOT WORK RIGHT.", modClass));
-                                }
-                                if(Modifier.isStatic(m.getModifiers())) {
-                                    throw new IllegalStateException(String.format("@Init for mod %s is static! MOD LOADING WILL NOT WORK RIGHT.", modClass));
-                                }
-                                m.invoke(mod);
-                            }
-                        }
-                        logger.info("Loaded mod: {}", mod);
+                        logger.info("Loaded mod {}: {}", mod.getClass().getAnnotation(Mod.class).value(), mod.getClass());
                     }
                 }
             } catch(final Throwable t) {

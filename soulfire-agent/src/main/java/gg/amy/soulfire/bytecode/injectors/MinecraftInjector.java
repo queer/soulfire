@@ -4,7 +4,7 @@ import gg.amy.soulfire.api.Soulfire;
 import gg.amy.soulfire.bytecode.ClassMap;
 import gg.amy.soulfire.bytecode.Injector;
 import gg.amy.soulfire.bytecode.mapping.MappedClass;
-import gg.amy.soulfire.events.Eventer;
+import gg.amy.soulfire.events.Hooks;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.*;
 
@@ -53,7 +53,7 @@ public class MinecraftInjector extends Injector {
                     final var insns = new InsnList();
                     insns.add(new MethodInsnNode(INVOKESTATIC, $(Soulfire.class), "soulfire", "()" + $$(Soulfire.class), true));
                     insns.add(new MethodInsnNode(INVOKEINTERFACE, $(Soulfire.class), "init", "()V", true));
-                    insns.add(new MethodInsnNode(INVOKESTATIC, $(Eventer.class), "fireInit", "()V", false));
+                    insns.add(new MethodInsnNode(INVOKESTATIC, $(Hooks.class), "fireInit", "()V", false));
                     mn.instructions.insert(putGameDir, insns);
                 }
 
@@ -62,7 +62,7 @@ public class MinecraftInjector extends Injector {
                         throw new IllegalStateException("Couldn't find ModelManager#<init>!");
                     }
                     final var insns = new InsnList();
-                    insns.add(new MethodInsnNode(INVOKESTATIC, $(Eventer.class), "fireResourceLoad", "()V", false));
+                    insns.add(new MethodInsnNode(INVOKESTATIC, $(Hooks.class), "fireResourceLoad", "()V", false));
                     mn.instructions.insert(modelManagerInit, insns);
                 }
 
@@ -71,7 +71,7 @@ public class MinecraftInjector extends Injector {
                         throw new IllegalStateException("Somehow couldn't find RETURN (seriously wtf???)!");
                     }
                     final var insns = new InsnList();
-                    insns.add(new MethodInsnNode(INVOKESTATIC, $(Eventer.class), "fireGameLoaded", "()V", false));
+                    insns.add(new MethodInsnNode(INVOKESTATIC, $(Hooks.class), "fireGameLoaded", "()V", false));
                     mn.instructions.insertBefore(ret, insns);
                 }
             }

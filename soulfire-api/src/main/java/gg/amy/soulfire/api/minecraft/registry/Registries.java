@@ -565,6 +565,12 @@ public interface Registries {
         static ResourceKey of(@Nonnull final ResourceKey key, @Nonnull final ResourceLocation location) {
             return unimplemented();
         }
+
+        @BridgeMethod("location()")
+        ResourceLocation location();
+
+        @BridgeField("registryName")
+        ResourceLocation registryName();
     }
 
     @Bridge("net.minecraft.resources.ResourceLocation")

@@ -48,7 +48,8 @@ public final class SoulfireAgent {
                     new TitleScreenInjector(),
                     new ResourceLocationInjector(),
                     new ResourceKeyInjector(),
-                    new SimpleReloadableResourceManagerInjector()
+                    new SimpleReloadableResourceManagerInjector(),
+                    new CreativeModeInventoryScreenInjector()
             );
             final var redefiners = List.<Redefiner>of(
                     new SoulfireRedefiner()

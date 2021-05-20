@@ -4,7 +4,7 @@ import gg.amy.soulfire.api.minecraft.resource.SimpleReloadableResourceManager;
 import gg.amy.soulfire.bytecode.ClassMap;
 import gg.amy.soulfire.bytecode.Injector;
 import gg.amy.soulfire.bytecode.mapping.MappedClass;
-import gg.amy.soulfire.events.Eventer;
+import gg.amy.soulfire.events.Hooks;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.*;
 
@@ -39,7 +39,7 @@ public class SimpleReloadableResourceManagerInjector extends Injector {
                 }
                 final var insns = new InsnList();
                 insns.add(new VarInsnNode(ALOAD, 0));
-                insns.add(new MethodInsnNode(INVOKESTATIC, $(Eventer.class), "fireResourceManagerReload", String.format("(%s)V", $$(SimpleReloadableResourceManager.class)), false));
+                insns.add(new MethodInsnNode(INVOKESTATIC, $(Hooks.class), "fireResourceManagerReload", String.format("(%s)V", $$(SimpleReloadableResourceManager.class)), false));
                 mn.instructions.insert(clearInsn, insns);
             }
         }

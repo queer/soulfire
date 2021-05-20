@@ -2,8 +2,12 @@ package gg.amy.soulfire.api.minecraft.item;
 
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeField;
+import gg.amy.soulfire.annotations.Setter;
+
+import javax.annotation.Nonnull;
 
 import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
+import static gg.amy.soulfire.api.YouFuckedUp.unimplementedVoid;
 
 /**
  * @author amy
@@ -11,6 +15,17 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
  */
 @Bridge("net.minecraft.world.item.CreativeModeTab")
 public interface ItemCategory {
+//    @BridgeField("TABS")
+//    static ItemCategory[] tabs() {
+//        return unimplemented();
+//    }
+
+//    @Setter
+//    @BridgeField("TABS")
+//    static void tabs(@Nonnull final ItemCategory[] categories) {
+//        unimplementedVoid();
+//    }
+
     @BridgeField("TAB_BUILDING_BLOCKS")
     static ItemCategory buildingBlocks() {
         return unimplemented();

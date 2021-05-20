@@ -7,6 +7,7 @@ import gg.amy.soulfire.bytecode.Injector;
 import gg.amy.soulfire.bytecode.Redefiner;
 import gg.amy.soulfire.bytecode.mapping.MappedClass;
 import gg.amy.soulfire.utils.AgentUtils;
+import gg.amy.soulfire.utils.InsnPrinter;
 import io.github.classgraph.ClassGraph;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -128,6 +129,10 @@ public final class BridgeSynthesiser implements Opcodes {
                             default -> throw new IllegalStateException("Unexpected value: " + obfDesc.charAt(obfDesc.length() - 1));
                         }));
 
+                        if(m.isAnnotationPresent(DumpASM.class)) {
+                            InsnPrinter.print(insns);
+                        }
+
                         final var node = new MethodNode(ACC_PUBLIC, m.getName(), Method.getMethod(m).getDescriptor(), null, null);
                         node.instructions.clear();
                         node.instructions.add(insns);
@@ -138,6 +143,7 @@ public final class BridgeSynthesiser implements Opcodes {
 
                     // 1.4. Detect virtual field bridges.
                     if(m.isAnnotationPresent(BridgeField.class) && !Modifier.isStatic(m.getModifiers())) {
+                        // TODO: Support setters
                         logger.debug("Synthesising non-static field bridge {}#{}!", bridgeClass, m.getName());
                         final var obfField = target.field(m.getAnnotation(BridgeField.class).value());
 
@@ -156,6 +162,10 @@ public final class BridgeSynthesiser implements Opcodes {
                             case ';' -> ARETURN;
                             default -> ARETURN;
                         }));
+
+                        if(m.isAnnotationPresent(DumpASM.class)) {
+                            InsnPrinter.print(insns);
+                        }
 
                         final var node = new MethodNode(ACC_PUBLIC, m.getName(), Method.getMethod(m).getDescriptor(), null, null);
                         node.instructions.clear();
@@ -221,7 +231,7 @@ public final class BridgeSynthesiser implements Opcodes {
 
                         if(obfMethod.obfName().startsWith("<init>")) {
                             insns.add(new MethodInsnNode(INVOKESPECIAL, $(target.obfName()), obfMethod.obfName(), obfDesc, false));
-                            insns.add(new TypeInsnNode(CHECKCAST, $(m.getReturnType().getName())));
+//                            insns.add(new TypeInsnNode(CHECKCAST, $(m.getReturnType().getName())));
                             insns.add(new InsnNode(ARETURN));
                         } else {
                             insns.add(new MethodInsnNode(INVOKESTATIC, $(target.obfName()), obfMethod.obfName(), obfDesc, false));
@@ -235,6 +245,10 @@ public final class BridgeSynthesiser implements Opcodes {
                                 case ';' -> ARETURN;
                                 default -> throw new IllegalStateException("Unexpected value: " + obfDesc.charAt(obfDesc.length() - 1));
                             }));
+                        }
+
+                        if(m.isAnnotationPresent(DumpASM.class)) {
+                            InsnPrinter.print(insns);
                         }
 
                         mn.instructions.clear();
@@ -258,17 +272,26 @@ public final class BridgeSynthesiser implements Opcodes {
                         final var insns = new InsnList();
                         final var obfDesc = obfField.desc();
 
-                        // 2.5. Synthesise load and return insns.
-                        insns.add(new FieldInsnNode(GETSTATIC, target.obfName().replace('.', '/'), obfField.obfName(), obfDesc));
+                        // 2.5. Synthesise insns.
+                        if(m.isAnnotationPresent(Setter.class)) {
+                            insns.add(new VarInsnNode(Type.getType(m.getParameterTypes()[0]).getOpcode(ILOAD), 0));
+                            insns.add(new FieldInsnNode(PUTSTATIC, $(target.obfName()), obfField.obfName(), obfDesc));
+                            insns.add(new InsnNode(RETURN));
+                        } else {
+                            insns.add(new FieldInsnNode(GETSTATIC, $(target.obfName()), obfField.obfName(), obfDesc));
+                            insns.add(new InsnNode(switch(obfDesc.charAt(obfDesc.length() - 1)) {
+                                case 'Z', 'I', 'C', 'S', 'B' -> IRETURN;
+                                case 'J' -> LRETURN;
+                                case 'F' -> FRETURN;
+                                case 'D' -> DRETURN;
+                                case ';' -> ARETURN;
+                                default -> ARETURN;
+                            }));
+                        }
 
-                        insns.add(new InsnNode(switch(obfDesc.charAt(obfDesc.length() - 1)) {
-                            case 'Z', 'I', 'C', 'S', 'B' -> IRETURN;
-                            case 'J' -> LRETURN;
-                            case 'F' -> FRETURN;
-                            case 'D' -> DRETURN;
-                            case ';' -> ARETURN;
-                            default -> ARETURN;
-                        }));
+                        if(m.isAnnotationPresent(DumpASM.class)) {
+                            InsnPrinter.print(insns);
+                        }
 
                         mn.instructions.clear();
                         mn.instructions.add(insns);
