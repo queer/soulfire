@@ -569,13 +569,13 @@ public interface Registries {
 
     @Bridge("net.minecraft.resources.ResourceLocation")
     interface ResourceLocation {
-//        @BridgeMethod("<init>(java.lang.String[])")
+        //        @BridgeMethod("<init>(java.lang.String[])")
         static ResourceLocation of(@Nonnull final String[] parts) {
             return unimplemented();
         }
 
         @BridgeMethod("<init>(java.lang.String)")
-        static ResourceLocation of(@Nonnull final String id) {
+        static ResourceLocation of(@Nonnull final String location) {
             return unimplemented();
         }
 

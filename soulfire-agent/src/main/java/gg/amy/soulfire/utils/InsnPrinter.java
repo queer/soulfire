@@ -14,6 +14,7 @@ import java.io.StringWriter;
  * @author amy
  * @since 5/18/21.
  */
+@SuppressWarnings("unused")
 public final class InsnPrinter {
     private static final Logger LOGGER = LogManager.getLogger();
 

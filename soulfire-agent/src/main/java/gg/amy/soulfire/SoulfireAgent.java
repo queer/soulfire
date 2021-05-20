@@ -1,10 +1,12 @@
 package gg.amy.soulfire;
 
+import gg.amy.soulfire.api.SoulfireImpl;
 import gg.amy.soulfire.bytecode.ClassMap;
 import gg.amy.soulfire.bytecode.Injector;
 import gg.amy.soulfire.bytecode.Redefiner;
-import gg.amy.soulfire.bytecode.bridge.BridgeSynthesiser;
 import gg.amy.soulfire.bytecode.injectors.*;
+import gg.amy.soulfire.bytecode.redefiners.SoulfireRedefiner;
+import gg.amy.soulfire.bytecode.synthesis.BridgeSynthesiser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -35,7 +37,6 @@ public final class SoulfireAgent {
             LOGGER.info("Mapping classes...");
             ClassMap.map();
 
-            // Synthesise bridges
             LOGGER.info("Synthesising bridges...");
             BridgeSynthesiser.synthesise(i);
 
@@ -46,9 +47,12 @@ public final class SoulfireAgent {
                     new ClientBrandRetrieverInjector(),
                     new TitleScreenInjector(),
                     new ResourceLocationInjector(),
-                    new ResourceKeyInjector()
+                    new ResourceKeyInjector(),
+                    new SimpleReloadableResourceManagerInjector()
             );
-            final var redefiners = List.<Redefiner>of();
+            final var redefiners = List.<Redefiner>of(
+                    new SoulfireRedefiner()
+            );
 
             // Add injectors
             injectors.forEach(injector -> {
@@ -57,18 +61,19 @@ public final class SoulfireAgent {
             });
 
             // Add redefiners
-            //noinspection RedundantOperationOnEmptyContainer
             i.redefineClasses(redefiners.stream().map(Redefiner::redefine).toArray(ClassDefinition[]::new));
 
             // Retransforming injectors
             injectors.stream().filter(Injector::needsRetransform).forEach(injector -> {
                 try {
+                    LOGGER.info("Retransforming class {}", injector.classToInject());
                     i.retransformClasses(Class.forName(injector.classToInject().replace("/", ".")));
                 } catch(final UnmodifiableClassException | ClassNotFoundException e) {
                     throw new IllegalStateException(e);
                 }
             });
 
+            ((SoulfireImpl) SoulfireImpl.INSTANCE).modLoader().init();
             LOGGER.info("premain finished! Booting Minecraft...");
         } catch(final Throwable t) {
             LOGGER.error("Couldn't finish premain:", t);

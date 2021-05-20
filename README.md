@@ -16,9 +16,7 @@ If Forge and Fabric expose Minecraft's APIs directly, soulfire is more like Bukk
 
 ## Philosophy
 
-If you ever have to touch native Minecraft APIs, do bytecode injection, etc.,
-then that's a bug in soulfire and should be reported. You should never ever
-ever have to resort to such hacks. I understand that this will likely create a
-maintenance nightmare and break literally everything all the time, but I figure
-that fuck it, if I'm already shooting for the moon by making my own modding API
-then I'm gonna do it the way I want to, dammit.
+If you ever have to touch native Minecraft APIs, do bytecode injection, etc., then that's a bug in soulfire and should
+be reported. You should never ever ever have to resort to such hacks. I understand that this will likely create a
+maintenance nightmare and break literally everything all the time, but I figure that fuck it, if I'm already shooting
+for the moon by making my own modding API then I'm gonna do it the way I want to, dammit.

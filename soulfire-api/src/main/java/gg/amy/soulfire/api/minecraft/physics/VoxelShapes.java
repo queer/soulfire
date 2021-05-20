@@ -17,10 +17,12 @@ public interface VoxelShapes {
     static VoxelShape empty() {
         return unimplemented();
     }
+
     @BridgeMethod("block()")
     static VoxelShape block() {
         return unimplemented();
     }
+
     @BridgeMethod("box(double,double,double,double,double,double)")
     static VoxelShape box(final double minX, final double minY, final double minZ, final double maxX, final double maxY, final double maxZ) {
         return unimplemented();

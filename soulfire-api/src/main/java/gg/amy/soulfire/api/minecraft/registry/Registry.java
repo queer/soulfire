@@ -8,7 +8,6 @@ import gg.amy.soulfire.api.minecraft.registry.Registries.ResourceKey;
 import gg.amy.soulfire.api.minecraft.registry.Registries.ResourceLocation;
 
 import javax.annotation.Nonnull;
-
 import java.util.Optional;
 
 import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;

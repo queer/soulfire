@@ -3,11 +3,9 @@ package gg.amy.soulfire.bytecode;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.util.CheckClassAdapter;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.lang.instrument.ClassDefinition;
 import java.util.Objects;
 
@@ -21,7 +19,7 @@ public abstract class Redefiner extends BytecodeMangler {
     }
 
     public final ClassDefinition redefine() {
-        logger.info("Redefining {}...", classToInject);
+        logger.debug("Redefining {}...", classToInject);
         try(final var stream = new BufferedInputStream(Objects.requireNonNull(getClass().getResourceAsStream('/' + classToInject + ".class")))) {
             final var bytes = stream.readAllBytes();
             final var cn = new ClassNode();

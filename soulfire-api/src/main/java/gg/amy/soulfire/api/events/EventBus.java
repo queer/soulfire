@@ -31,9 +31,9 @@ public interface EventBus {
     /**
      * Unregisters the given handler for a specific event.
      *
-     * @param event
-     * @param listener
-     * @param <T>
+     * @param event    The type of event to unlisten on.
+     * @param listener The listener to unregister.
+     * @param <T>      The type of event.
      */
     <T> void unregister(Class<T> event, Function<T, T> listener);
 }

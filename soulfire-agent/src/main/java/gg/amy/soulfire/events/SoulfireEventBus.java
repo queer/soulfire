@@ -3,6 +3,8 @@ package gg.amy.soulfire.events;
 import gg.amy.soulfire.api.events.EventBus;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -18,7 +20,7 @@ public class SoulfireEventBus implements EventBus {
     @Nonnull
     @Override
     public <T> T fire(@Nonnull T event) {
-        for(final var handler : listeners.get(event.getClass())) {
+        for(final var handler : listeners.computeIfAbsent(event.getClass(), this::setCreator)) {
             //noinspection unchecked
             event = ((Function<T, T>) handler).apply(event);
         }
@@ -27,11 +29,17 @@ public class SoulfireEventBus implements EventBus {
 
     @Override
     public <T> void register(final Class<T> event, final Function<T, T> listener) {
-        listeners.computeIfAbsent(event, __ -> ConcurrentHashMap.newKeySet()).add(listener);
+        listeners.computeIfAbsent(event, this::setCreator).add(listener);
     }
 
     @Override
     public <T> void unregister(final Class<T> event, final Function<T, T> listener) {
-        listeners.computeIfAbsent(event, __ -> ConcurrentHashMap.newKeySet()).remove(listener);
+        listeners.computeIfAbsent(event, this::setCreator).remove(listener);
+    }
+
+    @Nonnull
+    private Set<Function<?, ?>> setCreator(@Nonnull final Class<?> _cls) {
+        // TODO: AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        return Collections.newSetFromMap(Collections.synchronizedMap(new LinkedHashMap<>()));
     }
 }

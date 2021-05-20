@@ -19,7 +19,7 @@ public class ResourceLocationInjector extends Injector {
         for(final var mn : cn.methods) {
             if(mn.name.equals("<init>")) {
                 mn.access = ACC_PUBLIC;
-                logger.info("{}#{} now public", cn.name, mn.name);
+                logger.debug("{}#{} now public", cn.name, mn.name);
             }
         }
     }

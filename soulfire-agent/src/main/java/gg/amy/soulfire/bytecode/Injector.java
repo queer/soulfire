@@ -31,7 +31,7 @@ public abstract class Injector extends BytecodeMangler implements ClassFileTrans
                                   final ProtectionDomain protectionDomain, final byte[] bytes) {
         if(classToInject.equals(s)) {
             try {
-                logger.info("Injecting class: {}", classToInject);
+                logger.debug("Injecting class: {}", classToInject);
                 final ClassReader cr = new ClassReader(bytes);
                 final ClassNode cn = new ClassNode();
                 cr.accept(cn, 0);
@@ -41,7 +41,7 @@ public abstract class Injector extends BytecodeMangler implements ClassFileTrans
                 final byte[] cwBytes = cw.toByteArray();
                 // THIS LOADS THE CLASS
                 // CheckClassAdapter.verify(new ClassReader(cwBytes), true, new PrintWriter(System.out));
-                logger.info("Finished injecting " + classToInject + '!');
+                logger.debug("Finished injecting " + classToInject + '!');
                 return cwBytes;
             } catch(final Throwable t) {
                 logger.error("Error injecting class " + classToInject, t);

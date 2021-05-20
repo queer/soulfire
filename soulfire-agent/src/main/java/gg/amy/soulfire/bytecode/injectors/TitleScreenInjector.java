@@ -25,7 +25,6 @@ public class TitleScreenInjector extends Injector {
 
         final var render = titleScreen.method("render(com.mojang.blaze3d.vertex.PoseStack,int,int,float)");
         final var drawString = component.method("drawString(com.mojang.blaze3d.vertex.PoseStack,net.minecraft.client.gui.Font,java.lang.String,int,int,int)");
-        logger.info("Collected parts: {}", render.desc());
 
         for(final var m : cn.methods) {
             if(m.name.equals(render.obfName()) && m.desc.equals(render.descNoComma())) {
