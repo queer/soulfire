@@ -2,6 +2,7 @@ package gg.amy.soulfire.example;
 
 import gg.amy.soulfire.api.Soulfire;
 import gg.amy.soulfire.api.events.event.MinecraftInit;
+import gg.amy.soulfire.api.events.event.MinecraftReady;
 import gg.amy.soulfire.api.minecraft.block.Block;
 import gg.amy.soulfire.api.minecraft.block.BlockProperties;
 import gg.amy.soulfire.api.minecraft.block.Material;
@@ -33,6 +34,11 @@ public class ExampleMod {
 
             logger.info("############################ Mod init finished");
 
+            return event;
+        });
+
+        Soulfire.soulfire().bus().register(MinecraftReady.class, event -> {
+            logger.info("### MINECRAFT READY ###");
             return event;
         });
     }
