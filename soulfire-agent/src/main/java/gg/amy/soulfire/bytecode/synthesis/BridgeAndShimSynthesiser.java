@@ -406,7 +406,6 @@ public final class BridgeAndShimSynthesiser implements Opcodes {
                                     }
                                     argCounter += 1;
                                 }
-                                logger.warn("synthesising ctor {}", ctor);
                                 insns.add(new MethodInsnNode(INVOKESPECIAL, cn.superName, "<init>", obfDesc, false));
                                 insns.add(new InsnNode(RETURN));
 

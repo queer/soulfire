@@ -1,5 +1,5 @@
 {
-  "parent": "block/cube_all",
+  "parent": "example:block/half_block",
   "textures": {
     "all": "example:block/test_block"
   }

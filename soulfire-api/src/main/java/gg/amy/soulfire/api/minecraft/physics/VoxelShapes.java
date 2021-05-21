@@ -2,7 +2,6 @@ package gg.amy.soulfire.api.minecraft.physics;
 
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeMethod;
-import gg.amy.soulfire.annotations.DumpASM;
 import gg.amy.soulfire.annotations.Nontransforming;
 
 import javax.annotation.Nonnull;
@@ -16,15 +15,14 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 @Nontransforming
 @Bridge("net.minecraft.world.phys.shapes.Shapes")
 public interface VoxelShapes {
-    @BridgeMethod("empty()")
+    // TODO: If we try to call the vanilla empty()/block() methods, they fuck up. Why?
+
     static VoxelShape empty() {
-        return unimplemented();
+        return box(0, 0, 0, 0, 0, 0);
     }
 
-    @DumpASM
-    @BridgeMethod("block()")
     static VoxelShape block() {
-        return unimplemented();
+        return box(0, 0, 0, 1, 1, 1);
     }
 
     @BridgeMethod("box(double,double,double,double,double,double)")

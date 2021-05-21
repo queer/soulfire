@@ -2,22 +2,23 @@ package gg.amy.soulfire.example;
 
 import gg.amy.soulfire.api.Soulfire;
 import gg.amy.soulfire.api.events.event.game.MinecraftInit;
-import gg.amy.soulfire.api.events.event.game.MinecraftReady;
 import gg.amy.soulfire.api.events.event.item.ItemInteraction;
-import gg.amy.soulfire.api.minecraft.block.Block;
-import gg.amy.soulfire.api.minecraft.block.BlockProperties;
-import gg.amy.soulfire.api.minecraft.block.Material;
-import gg.amy.soulfire.api.minecraft.block.SoulfireBlock;
+import gg.amy.soulfire.api.minecraft.block.*;
 import gg.amy.soulfire.api.minecraft.chat.TextComponent;
 import gg.amy.soulfire.api.minecraft.item.Item;
 import gg.amy.soulfire.api.minecraft.item.ItemCategory;
 import gg.amy.soulfire.api.minecraft.item.ItemProperties;
+import gg.amy.soulfire.api.minecraft.physics.CollisionContext;
+import gg.amy.soulfire.api.minecraft.physics.VoxelShape;
+import gg.amy.soulfire.api.minecraft.physics.VoxelShapes;
 import gg.amy.soulfire.api.minecraft.registry.Identifier;
 import gg.amy.soulfire.api.minecraft.registry.Registry;
 import gg.amy.soulfire.api.minecraft.sound.Sounds;
 import gg.amy.soulfire.api.mod.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import javax.annotation.Nonnull;
 
 /**
  * @author amy
@@ -26,7 +27,24 @@ import org.apache.logging.log4j.Logger;
 @Mod("example")
 public class ExampleMod {
     private static final Item TEST_ITEM = Item.create(ItemProperties.create().category(ItemCategory.misc()));
-    private static final Block TEST_BLOCK = Block.create(BlockProperties.of(Material.metal()).strength(2.0F));
+    @SuppressWarnings("AnonymousInnerClassWithTooManyMethods")
+    private static final Block TEST_BLOCK = new SoulfireBlock(BlockProperties.of(Material.metal()).strength(2.0F)) {
+        @Override
+        public VoxelShape getOcclusionShape(@Nonnull final BlockState state, @Nonnull final BlockGetter getter, @Nonnull final BlockPos pos) {
+            return getShape(state, getter, pos, null);
+        }
+
+        @Override
+        public VoxelShape getCollisionShape(@Nonnull final BlockState state, @Nonnull final BlockGetter getter, @Nonnull final BlockPos pos, @Nonnull final CollisionContext ctx) {
+            return getOcclusionShape(state, getter, pos);
+        }
+
+        @Override
+        @SuppressWarnings("NullableProblems")
+        public VoxelShape getShape(@Nonnull final BlockState state, @Nonnull final BlockGetter getter, @Nonnull final BlockPos pos, @Nonnull final CollisionContext ctx) {
+            return VoxelShapes.box(0, 0.5, 0, 1, 1, 1);
+        }
+    };
     private final Logger logger = LogManager.getLogger(getClass());
 
     public ExampleMod() {
@@ -35,15 +53,9 @@ public class ExampleMod {
 
             Registry.registerItem(new Identifier("example", "test_item"), TEST_ITEM);
             Registry.registerBlock(new Identifier("example", "test_block"), TEST_BLOCK);
-            Registry.registerBlock(new Identifier("example", "soulfire_block"), new SoulfireBlock(BlockProperties.of(Material.fire())));
 
             logger.info("############################ Mod init finished");
 
-            return event;
-        });
-
-        Soulfire.soulfire().bus().register(MinecraftReady.class, event -> {
-//            logger.info("{}", VoxelShapes.block());
             return event;
         });
 
