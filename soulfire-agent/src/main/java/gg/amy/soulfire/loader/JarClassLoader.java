@@ -12,6 +12,6 @@ import java.net.URLClassLoader;
  */
 public class JarClassLoader extends URLClassLoader {
     public JarClassLoader(final File jar) {
-        super(new URL[]{URLHelper.fromFile(jar)}, JarClassLoader.class.getClassLoader());
+        super(new URL[]{URLHelper.fromFile(jar)}, ClassLoader.getSystemClassLoader());
     }
 }

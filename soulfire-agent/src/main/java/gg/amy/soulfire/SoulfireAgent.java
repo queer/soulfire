@@ -6,7 +6,7 @@ import gg.amy.soulfire.bytecode.Injector;
 import gg.amy.soulfire.bytecode.Redefiner;
 import gg.amy.soulfire.bytecode.injectors.*;
 import gg.amy.soulfire.bytecode.redefiners.SoulfireRedefiner;
-import gg.amy.soulfire.bytecode.synthesis.BridgeSynthesiser;
+import gg.amy.soulfire.bytecode.synthesis.BridgeAndShimSynthesiser;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -41,7 +41,7 @@ public final class SoulfireAgent {
             ClassMap.map();
 
             LOGGER.info("Synthesising bridges...");
-            BridgeSynthesiser.synthesise(i);
+            BridgeAndShimSynthesiser.synthesise(i);
 
             LOGGER.info("Injecting and redefining...");
             // Injectors and redefiners require mappings to already be parsed

@@ -34,12 +34,12 @@ for the moon by making my own modding API then I'm gonna do it the way I want to
 **Q:** Won't this approach scale poorly?
 
 **A:** Yup! Again, I'm doing this for fun. I don't really expect anyone to use this, I won't be going out shilling for
-       people to switch from Forge / Fabric and use this instead, etc. This is just me and my spare time.
+people to switch from Forge / Fabric and use this instead, etc. This is just me and my spare time.
 
 **Q:** Does it work?
 
 **A:** Yes! You can see an example mod [here](https://github.com/queer/soulfire/tree/mistress/soulfire-example-mod).
-       Mods go in `.minecraft/soulfire/mods`; this directory will be created for you if it doesn't already exist.
+Mods go in `.minecraft/soulfire/mods`; this directory will be created for you if it doesn't already exist.
 
 **Q:** Why not a root-level mods directory, ie. `.minecraft/mods`?
 

@@ -23,6 +23,9 @@ public interface Soulfire {
         return unimplemented();
     }
 
+    // TODO: Gate this
+    void init();
+
     /**
      * @return The current event bus.
      */

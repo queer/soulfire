@@ -10,6 +10,10 @@ import java.net.URL;
  * @since 5/19/21.
  */
 public final class URLHelper {
+    private URLHelper() {
+    }
+
+    @Nonnull
     public static URL fromFile(@Nonnull final File file) {
         try {
             return file.toURI().toURL();

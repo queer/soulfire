@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
  * @author amy
  * @since 5/20/21.
  */
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.CONSTRUCTOR})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DumpASM {
 }

@@ -7,9 +7,10 @@ import java.lang.annotation.Target;
 
 /**
  * @author amy
- * @since 5/19/21.
+ * @since 5/20/21.
  */
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Interface {
+public @interface Shim {
+    String value();
 }

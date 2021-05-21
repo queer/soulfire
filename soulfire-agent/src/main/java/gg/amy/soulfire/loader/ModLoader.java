@@ -5,6 +5,8 @@ import gg.amy.soulfire.api.events.event.game.MinecraftInit;
 import gg.amy.soulfire.api.events.event.game.MinecraftReady;
 import gg.amy.soulfire.api.events.event.resource.ResourceManagerReload;
 import gg.amy.soulfire.api.minecraft.Minecraft;
+import gg.amy.soulfire.api.minecraft.block.Blocks;
+import gg.amy.soulfire.api.minecraft.physics.VoxelShapes;
 import gg.amy.soulfire.api.minecraft.resource.FileResourcePack;
 import gg.amy.soulfire.api.minecraft.resource.SimpleReloadableResourceManager;
 import gg.amy.soulfire.api.mod.Mod;
@@ -46,11 +48,15 @@ public final class ModLoader {
             return event;
         });
         Soulfire.soulfire().bus().register(ResourceManagerReload.class, event -> {
-            logger.info("Reloading mod assets due to repository reload!");
-            loadModAssets();
+            if(event.repo().equals(Minecraft.getInstance().resourceManager())) {
+                logger.info("Reloading mod assets due to repository reload!");
+                loadModAssets();
+            }
             return event;
         });
         Soulfire.soulfire().bus().register(MinecraftReady.class, event -> {
+            logger.info("{}", VoxelShapes.block());
+
             //noinspection CodeBlock2Expr
             return event;
         });

@@ -2,13 +2,12 @@ package gg.amy.soulfire.bytecode.synthesis;
 
 import gg.amy.soulfire.annotations.*;
 import gg.amy.soulfire.api.minecraft.Minecraft;
-import gg.amy.soulfire.bytecode.ClassMap;
-import gg.amy.soulfire.bytecode.Injector;
-import gg.amy.soulfire.bytecode.Redefiner;
+import gg.amy.soulfire.bytecode.*;
 import gg.amy.soulfire.bytecode.mapping.MappedClass;
 import gg.amy.soulfire.utils.AgentUtils;
 import gg.amy.soulfire.utils.InsnPrinter;
 import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ClassInfo;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jgrapht.graph.DirectedAcyclicGraph;
@@ -22,17 +21,21 @@ import javax.annotation.Nonnull;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.lang.reflect.Modifier;
-import java.util.Arrays;
+import java.util.*;
 
 /**
  * @author amy
  * @since 5/18/21.
  */
 @SuppressWarnings("DuplicatedCode")
-public final class BridgeSynthesiser implements Opcodes {
+public final class BridgeAndShimSynthesiser implements Opcodes {
     private static final Logger LOGGER = LogManager.getLogger();
+    private static final Set<Class<?>> PRIMITIVE_CLASSES = Set.of(
+            boolean.class, byte.class, short.class, char.class, int.class, long.class,
+            float.class, double.class
+    );
 
-    private BridgeSynthesiser() {
+    private BridgeAndShimSynthesiser() {
     }
 
     public static void synthesise(@Nonnull final Instrumentation i) throws UnmodifiableClassException, ClassNotFoundException {
@@ -68,6 +71,17 @@ public final class BridgeSynthesiser implements Opcodes {
                 }
 
                 bridge(i, bridgeClass);
+            }
+
+            for(final var shim : graph.getClassesWithAnnotation(Shim.class.getName())) {
+                if(shim.isInterface()) {
+                    throw new IllegalArgumentException("@Shim class" + shim + " must not be an interface!");
+                }
+                if(shim.getInterfaces().isEmpty()) {
+                    throw new IllegalArgumentException("@Shim class " + shim + " has no interfaces!");
+                }
+
+                shim(shim);
             }
         }
     }
@@ -141,9 +155,9 @@ public final class BridgeSynthesiser implements Opcodes {
                         }
 
                         if(m.isAnnotationPresent(Interface.class)) {
-                            insns.add(new MethodInsnNode(INVOKEINTERFACE, target.obfName().replace('.', '/'), obfMethod.obfName(), obfDesc, true));
+                            insns.add(new MethodInsnNode(INVOKEINTERFACE, $(target.obfName()), obfMethod.obfName(), obfDesc, true));
                         } else {
-                            insns.add(new MethodInsnNode(INVOKEVIRTUAL, target.obfName().replace('.', '/'), obfMethod.obfName(), obfDesc, false));
+                            insns.add(new MethodInsnNode(INVOKEVIRTUAL, $(target.obfName()), obfMethod.obfName(), obfDesc, false));
                         }
 
                         // 1.3. Synthesise correct return insn.
@@ -340,6 +354,155 @@ public final class BridgeSynthesiser implements Opcodes {
         }.redefine());
     }
 
+    private static void shim(@Nonnull final ClassInfo shim) {
+        LOGGER.info("Operating on shim class {}!", shim.getName());
+        final var bridgeMethods = new HashSet<ShimmableMethod>();
+        for(final ClassInfo ci : shim.getInterfaces()) {
+            final var iface = ci.loadClass();
+            if(iface.isAnnotationPresent(Bridge.class)) {
+                bridgeMethods.addAll(detectShimmableMethods(iface));
+                for(final Class<?> inner : iface.getInterfaces()) {
+                    // TODO: Recursion
+                    bridgeMethods.addAll(detectShimmableMethods(inner));
+                }
+            }
+        }
+        ClassDefiner.defineClass(ClassLoader.getSystemClassLoader(), new Generator(shim.getName()) {
+            @Override
+            protected void inject(final ClassReader cr, final ClassNode cn) {
+                final var shimTarget = ClassMap.lookup((String) shim.getAnnotationInfo(Shim.class.getName()).getParameterValues().get(0).getValue());
+                cn.superName = shimTarget.obfName();
+                for(final var mn : cn.methods) {
+                    if(mn.name.equals("<init>")) {
+                        if(mn.visibleAnnotations != null) {
+                            final var maybeAnnotation = mn.visibleAnnotations.stream().filter(an -> an.desc.equals($$(Constructor.class))).findFirst();
+                            if(maybeAnnotation.isPresent()) {
+                                final var ctor = (String) maybeAnnotation.get().values.get(1);
+                                final var insns = new InsnList();
+                                final var obfDesc = shimTarget.method(ctor).descNoComma();
+                                final var obfTypes = Type.getArgumentTypes(obfDesc);
+
+                                insns.add(new VarInsnNode(ALOAD, 0));
+                                int argCounter = 0;
+                                int stackPointer = 1;
+                                for(final var type : Type.getArgumentTypes(mn.desc)) {
+                                    switch(type.getDescriptor()) {
+                                        case "D" -> {
+                                            insns.add(new VarInsnNode(DLOAD, stackPointer));
+                                            stackPointer += 2;
+                                        }
+                                        case "L" -> {
+                                            insns.add(new VarInsnNode(LLOAD, stackPointer));
+                                            stackPointer += 2;
+                                        }
+                                        default -> {
+                                            final var insn = Type.getType(type.getDescriptor()).getOpcode(ILOAD);
+                                            insns.add(new VarInsnNode(insn, stackPointer));
+                                            if(insn == ALOAD) {
+                                                insns.add(new TypeInsnNode(CHECKCAST, $(obfTypes[argCounter].getClassName())));
+                                            }
+                                            stackPointer += 1;
+                                        }
+                                    }
+                                    argCounter += 1;
+                                }
+                                logger.warn("synthesising ctor {}", ctor);
+                                insns.add(new MethodInsnNode(INVOKESPECIAL, cn.superName, "<init>", obfDesc, false));
+                                insns.add(new InsnNode(RETURN));
+
+                                if(mn.visibleAnnotations.stream().anyMatch(an -> an.desc.equals($$(DumpASM.class)))) {
+                                    logger.info("Dumping method shim asm for {}#<init>", shim.getName());
+                                    InsnPrinter.print(insns);
+                                }
+                                mn.instructions.clear();
+                                mn.instructions.add(insns);
+                            }
+                        }
+                    }
+                }
+
+                for(final ShimmableMethod shimmableMethod : bridgeMethods) {
+                    if(shimmableMethod.ifaceMethod.getName().contains("<")) {
+                        logger.warn("Skipping synthesising constructor-like method {}#{} for {}!", shimmableMethod.owner, shimmableMethod.ifaceMethod.getName(), shim.getName());
+                    }
+
+                    final var target = shimmableMethod.target;
+                    final var m = shimmableMethod.ifaceMethod;
+                    final var bridgeMethod = m.getAnnotation(BridgeMethod.class).value();
+                    final var obfMethod = target.method(bridgeMethod);
+                    final var obfDesc = obfMethod.descNoComma();
+
+                    final var insns = new InsnList();
+
+                    insns.add(new VarInsnNode(ALOAD, 0)); // this
+
+                    int stackPointer = 1;
+                    for(final Class<?> type : m.getParameterTypes()) {
+                        final var loadInsn = Type.getType(type).getOpcode(ILOAD);
+                        insns.add(new VarInsnNode(loadInsn, stackPointer));
+                        if(!PRIMITIVE_CLASSES.contains(type)) {
+                            insns.add(new TypeInsnNode(CHECKCAST, $(type.getName())));
+                        }
+                        if(type.equals(double.class) || type.equals(long.class)) {
+                            stackPointer += 2;
+                        } else {
+                            stackPointer += 1;
+                        }
+                    }
+
+                    // TODO: INVOKEINTERFACE?
+                    insns.add(new MethodInsnNode(INVOKEVIRTUAL, $(shim.getName()), m.getName(), Method.getMethod(m).getDescriptor(), false));
+                    if(!PRIMITIVE_CLASSES.contains(m.getReturnType())) {
+                        insns.add(new TypeInsnNode(CHECKCAST, $(ClassMap.lookup(m.getReturnType().getAnnotation(Bridge.class).value()).obfName())));
+                    }
+
+                    // 1.3. Synthesise correct return insn.
+                    insns.add(new InsnNode(switch(obfDesc.charAt(obfDesc.length() - 1)) {
+                        case 'Z', 'I', 'C', 'S', 'B' -> IRETURN;
+                        case 'J' -> LRETURN;
+                        case 'F' -> FRETURN;
+                        case 'D' -> DRETURN;
+                        case 'V' -> RETURN;
+                        case ';' -> ARETURN;
+                        default -> throw new IllegalStateException("Unexpected value: " + obfDesc.charAt(obfDesc.length() - 1));
+                    }));
+
+                    // TODO: lol
+                    if(shim.getMethodInfo(m.getName()).getSingleMethod(m.getName()).hasAnnotation(DumpASM.class.getName())) {
+                        logger.info("Dumping method shim asm for {}#{} -> {}#{}", shim, obfMethod.obfName(), shim, m.getName());
+                        InsnPrinter.print(insns);
+                    }
+
+                    final var mn = new MethodNode(ACC_PUBLIC, obfMethod.obfName(), obfMethod.descNoComma(), null, new String[0]);
+
+                    mn.instructions.clear();
+                    mn.instructions.add(insns);
+
+                    cn.methods.add(mn);
+                }
+            }
+        }.generate(), shim.getName());
+    }
+
+    private static List<ShimmableMethod> detectShimmableMethods(@Nonnull final Class<?> iface) {
+        final var bridgeMethods = new ArrayList<ShimmableMethod>();
+        final var bridge = ClassMap.lookup(iface.getAnnotation(Bridge.class).value());
+        for(final var method : iface.getDeclaredMethods()) {
+            if(method.isAnnotationPresent(BridgeMethod.class) && !Modifier.isStatic(method.getModifiers())) {
+                bridgeMethods.add(new ShimmableMethod(bridge, iface, method));
+            }
+        }
+        return bridgeMethods;
+    }
+
+    private record ShimmableMethod(MappedClass target, Class<?> owner, java.lang.reflect.Method ifaceMethod) {
+        @Override
+        public int hashCode() {
+            return Objects.hash(target, owner, ifaceMethod);
+        }
+    }
+
     public static class Edge {
+
     }
 }

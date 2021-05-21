@@ -2,10 +2,12 @@ package gg.amy.soulfire.example;
 
 import gg.amy.soulfire.api.Soulfire;
 import gg.amy.soulfire.api.events.event.game.MinecraftInit;
+import gg.amy.soulfire.api.events.event.game.MinecraftReady;
 import gg.amy.soulfire.api.events.event.item.ItemInteraction;
 import gg.amy.soulfire.api.minecraft.block.Block;
 import gg.amy.soulfire.api.minecraft.block.BlockProperties;
 import gg.amy.soulfire.api.minecraft.block.Material;
+import gg.amy.soulfire.api.minecraft.block.SoulfireBlock;
 import gg.amy.soulfire.api.minecraft.chat.TextComponent;
 import gg.amy.soulfire.api.minecraft.item.Item;
 import gg.amy.soulfire.api.minecraft.item.ItemCategory;
@@ -33,9 +35,15 @@ public class ExampleMod {
 
             Registry.registerItem(new Identifier("example", "test_item"), TEST_ITEM);
             Registry.registerBlock(new Identifier("example", "test_block"), TEST_BLOCK);
+            Registry.registerBlock(new Identifier("example", "soulfire_block"), new SoulfireBlock(BlockProperties.of(Material.fire())));
 
             logger.info("############################ Mod init finished");
 
+            return event;
+        });
+
+        Soulfire.soulfire().bus().register(MinecraftReady.class, event -> {
+//            logger.info("{}", VoxelShapes.block());
             return event;
         });
 

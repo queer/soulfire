@@ -2,6 +2,8 @@ package gg.amy.soulfire.api.minecraft.physics;
 
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeMethod;
+import gg.amy.soulfire.annotations.DumpASM;
+import gg.amy.soulfire.annotations.Nontransforming;
 
 import javax.annotation.Nonnull;
 
@@ -11,6 +13,7 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
  * @author amy
  * @since 5/19/21.
  */
+@Nontransforming
 @Bridge("net.minecraft.world.phys.shapes.Shapes")
 public interface VoxelShapes {
     @BridgeMethod("empty()")
@@ -18,6 +21,7 @@ public interface VoxelShapes {
         return unimplemented();
     }
 
+    @DumpASM
     @BridgeMethod("block()")
     static VoxelShape block() {
         return unimplemented();
