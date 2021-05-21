@@ -1,6 +1,7 @@
 package gg.amy.soulfire.api.events;
 
 import gg.amy.soulfire.api.events.event.ResourceEvent;
+import gg.amy.soulfire.api.events.event.item.ItemInteraction;
 import gg.amy.soulfire.api.minecraft.registry.Identifier;
 
 import javax.annotation.Nonnull;
@@ -42,7 +43,9 @@ public interface EventBus {
     <T> void unregister(Class<T> event, Function<T, T> listener);
 
     /**
-     * Registers a listener for the given resource event.
+     * Registers a listener for the given resource event. An example of when
+     * you'd use this is for {@link ItemInteraction}, where you would set a
+     * predicate to filter out events that aren't for your specific mod item.
      *
      * @param event     The type of event to listen on.
      * @param predicate A predicate filtering events based on an {@link Identifier}.

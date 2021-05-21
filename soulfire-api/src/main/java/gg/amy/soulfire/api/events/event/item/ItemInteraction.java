@@ -7,6 +7,9 @@ import gg.amy.soulfire.api.minecraft.item.ItemUseContext;
 import gg.amy.soulfire.api.minecraft.registry.Identifier;
 
 /**
+ * Fired when an item is used. Change the {@link #result} to change, well, the
+ * result of using the item.
+ *
  * @author amy
  * @since 5/20/21.
  */

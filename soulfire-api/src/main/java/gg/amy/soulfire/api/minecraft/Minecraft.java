@@ -16,6 +16,9 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
  */
 @Bridge("net.minecraft.client.Minecraft")
 public interface Minecraft {
+    /**
+     * @return The singleton Minecraft instance.
+     */
     @BridgeMethod("getInstance()")
     static Minecraft getInstance() {
         return unimplemented();
