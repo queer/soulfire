@@ -2,7 +2,6 @@ package gg.amy.soulfire.example;
 
 import gg.amy.soulfire.api.Soulfire;
 import gg.amy.soulfire.api.events.event.game.MinecraftInit;
-import gg.amy.soulfire.api.events.event.game.MinecraftReady;
 import gg.amy.soulfire.api.events.event.item.ItemInteraction;
 import gg.amy.soulfire.api.minecraft.block.Block;
 import gg.amy.soulfire.api.minecraft.block.BlockProperties;
@@ -40,16 +39,10 @@ public class ExampleMod {
             return event;
         });
 
-        Soulfire.soulfire().bus().register(MinecraftReady.class, event -> {
-            logger.info("### MINECRAFT READY ###");
-            return event;
-        });
-
         Soulfire.soulfire().bus().register(
                 ItemInteraction.class,
                 identifier -> identifier.matches("example", "test_item"),
                 event -> {
-                    logger.info("### server? {}", event.ctx().world().server());
                     final var player = event.ctx().player();
                     player.playSound(Sounds.playerLevelup(), 1F, 1F);
                     if(event.ctx().world().server()) {

@@ -16,7 +16,6 @@ import javax.annotation.Nonnull;
 @TransformAfter({World.class, ClientWorld.class, ServerWorld.class})
 @Bridge("net.minecraft.world.entity.Entity")
 public interface Entity {
-    @DumpASM
     @BridgeMethod("playSound(net.minecraft.sounds.SoundEvent,float,float)")
     void playSound(@Nonnull final Sound sound, float a, float b);
 
