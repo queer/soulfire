@@ -1,7 +1,11 @@
 package gg.amy.soulfire.api.events;
 
+import gg.amy.soulfire.api.events.event.ResourceEvent;
+import gg.amy.soulfire.api.minecraft.registry.Identifier;
+
 import javax.annotation.Nonnull;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 /**
  * @author amy
@@ -36,4 +40,17 @@ public interface EventBus {
      * @param <T>      The type of event.
      */
     <T> void unregister(Class<T> event, Function<T, T> listener);
+
+    /**
+     * Registers a listener for the given resource event.
+     *
+     * @param event     The type of event to listen on.
+     * @param predicate A predicate filtering events based on an {@link Identifier}.
+     * @param listener  The listener to register.
+     * @param <T>       The type of event
+     */
+    <T extends ResourceEvent> void register(Class<T> event, Predicate<Identifier> predicate, Function<T, T> listener);
+
+    // TODO: How to unregister these?
+//    <T extends ResourceEvent> void unregister(Class<T> event, Predicate<Identifier> predicate, Function<T, T> listener);
 }

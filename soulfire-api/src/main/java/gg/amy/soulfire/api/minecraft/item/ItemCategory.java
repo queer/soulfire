@@ -2,12 +2,8 @@ package gg.amy.soulfire.api.minecraft.item;
 
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeField;
-import gg.amy.soulfire.annotations.Setter;
-
-import javax.annotation.Nonnull;
 
 import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
-import static gg.amy.soulfire.api.YouFuckedUp.unimplementedVoid;
 
 /**
  * @author amy

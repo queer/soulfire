@@ -1,9 +1,9 @@
 package gg.amy.soulfire.loader;
 
 import gg.amy.soulfire.api.Soulfire;
-import gg.amy.soulfire.api.events.event.MinecraftReady;
-import gg.amy.soulfire.api.events.event.MinecraftInit;
-import gg.amy.soulfire.api.events.event.ResourceManagerReload;
+import gg.amy.soulfire.api.events.event.game.MinecraftInit;
+import gg.amy.soulfire.api.events.event.game.MinecraftReady;
+import gg.amy.soulfire.api.events.event.resource.ResourceManagerReload;
 import gg.amy.soulfire.api.minecraft.Minecraft;
 import gg.amy.soulfire.api.minecraft.resource.FileResourcePack;
 import gg.amy.soulfire.api.minecraft.resource.SimpleReloadableResourceManager;
@@ -50,7 +50,10 @@ public final class ModLoader {
             loadModAssets();
             return event;
         });
-        Soulfire.soulfire().bus().register(MinecraftReady.class, event -> event);
+        Soulfire.soulfire().bus().register(MinecraftReady.class, event -> {
+            //noinspection CodeBlock2Expr
+            return event;
+        });
     }
 
     private void locateModJars() {

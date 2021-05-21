@@ -21,14 +21,15 @@ public interface BlockPos {
         return unimplemented();
     }
 
-    @BridgeMethod("getX()")
-    int x();
-
-    @BridgeMethod("getY()")
-    int y();
-
-    @BridgeMethod("getZ()")
-    int z();
+    // TODO: These are supposed to take longs as params?
+//    @BridgeMethod("getX()")
+//    int x();
+//
+//    @BridgeMethod("getY()")
+//    int y();
+//
+//    @BridgeMethod("getZ()")
+//    int z();
 
     @BridgeMethod("above()")
     BlockPos above();

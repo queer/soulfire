@@ -25,7 +25,7 @@ public interface ResourcePackInfo {
     @FunctionalInterface
     @Bridge("net.minecraft.server.packs.repository.Pack$PackConstructor")
     interface PackInfoConstructor {
-//        @BridgeMethod("create(java.lang.String,boolean,java.util.function.Supplier,net.minecraft.server.packs.PackResources,net.minecraft.server.packs.metadata.pack.PackMetadataSection,net.minecraft.server.packs.repository.Pack$Position,net.minecraft.server.packs.repository.PackSource)")
+        //        @BridgeMethod("create(java.lang.String,boolean,java.util.function.Supplier,net.minecraft.server.packs.PackResources,net.minecraft.server.packs.metadata.pack.PackMetadataSection,net.minecraft.server.packs.repository.Pack$Position,net.minecraft.server.packs.repository.PackSource)")
         ResourcePackInfo create(@Nonnull final String packId, boolean allowFallback,
                                 @Nonnull Supplier<ResourcePack> supplier, @Nonnull PackMetadataSection section,
                                 PackPosition position, PackSource source);

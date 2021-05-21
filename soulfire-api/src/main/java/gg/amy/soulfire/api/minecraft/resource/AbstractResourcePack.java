@@ -2,7 +2,6 @@ package gg.amy.soulfire.api.minecraft.resource;
 
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeMethod;
-import gg.amy.soulfire.api.minecraft.registry.Registries;
 
 import javax.annotation.Nonnull;
 import java.io.InputStream;

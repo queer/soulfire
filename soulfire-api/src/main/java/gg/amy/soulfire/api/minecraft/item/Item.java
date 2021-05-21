@@ -33,4 +33,7 @@ public interface Item {
 
     @BridgeMethod("getMaxDamage()")
     int maxDamage();
+
+    @BridgeMethod("useOn(net.minecraft.world.item.context.UseOnContext)")
+    InteractionResult useOn(@Nonnull ItemUseContext ctx);
 }

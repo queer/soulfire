@@ -11,6 +11,7 @@ import gg.amy.soulfire.utils.InsnPrinter;
 import io.github.classgraph.ClassGraph;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
@@ -21,6 +22,7 @@ import javax.annotation.Nonnull;
 import java.lang.instrument.Instrumentation;
 import java.lang.instrument.UnmodifiableClassException;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 
 /**
  * @author amy
@@ -41,31 +43,53 @@ public final class BridgeSynthesiser implements Opcodes {
                 .acceptPackages(Minecraft.class.getPackageName())
                 .enableAllInfo()
                 .scan()) {
+            final var dag = new DirectedAcyclicGraph<Class<?>, Edge>(Edge.class);
+
             for(final var ci : graph.getClassesWithAnnotation(Bridge.class.getName())) {
                 final var bridgeClass = ci.loadClass();
                 if(!bridgeClass.isInterface()) {
                     throw new IllegalStateException(String.format("@Bridge class %s isn't an interface!", bridgeClass.getName()));
                 }
-                LOGGER.debug("Operating on bridge class {}!", bridgeClass.getName());
-                final var bridge = bridgeClass.getDeclaredAnnotation(Bridge.class);
-                final var target = ClassMap.lookup(bridge.value());
-                final var retransforming = bridgeClass.getDeclaredAnnotation(Retransforming.class) != null;
 
-                LOGGER.debug("Registering bridge transformer.");
+                dag.addVertex(bridgeClass);
+                if(bridgeClass.isAnnotationPresent(TransformAfter.class)) {
+                    final var after = bridgeClass.getDeclaredAnnotation(TransformAfter.class);
+                    for(final Class<?> dependency : after.value()) {
+                        dag.addVertex(dependency);
+                        dag.addEdge(dependency, bridgeClass);
+                    }
+                }
+            }
 
-                // 1. Register a transformer to force the target to
-                //    implement the bridge interface.
-                if(!bridgeClass.isAnnotationPresent(Nontransforming.class)) {
-                    addSyntheticBridgeInjector(i, target, bridgeClass, retransforming);
+            for(final Class<?> bridgeClass : dag) {
+                LOGGER.info("Operating on bridge class {}!", bridgeClass.getName());
+                if(Arrays.stream(bridgeClass.getDeclaredMethods()).anyMatch(m -> m.isAnnotationPresent(DumpASM.class))) {
+                    LOGGER.info("Bridging {}, will be dumping asm!", bridgeClass);
                 }
 
-                LOGGER.debug("Redefining bridge.");
-
-                // 2. Redefine the bridge interface to implement static
-                //    methods.
-                generateSyntheticBridges(i, bridgeClass, target);
+                bridge(i, bridgeClass);
             }
         }
+    }
+
+    private static void bridge(@Nonnull final Instrumentation i, @Nonnull final Class<?> bridgeClass) throws UnmodifiableClassException, ClassNotFoundException {
+        final var bridge = bridgeClass.getDeclaredAnnotation(Bridge.class);
+        final var target = ClassMap.lookup(bridge.value());
+        final var retransforming = bridgeClass.getDeclaredAnnotation(Retransforming.class) != null;
+
+        LOGGER.debug("Registering bridge transformer.");
+
+        // 1. Register a transformer to force the target to2
+        //    implement the bridge interface.
+        if(!bridgeClass.isAnnotationPresent(Nontransforming.class)) {
+            addSyntheticBridgeInjector(i, target, bridgeClass, retransforming);
+        }
+
+        LOGGER.debug("Redefining bridge.");
+
+        // 2. Redefine the bridge interface to implement static
+        //    methods.
+        generateSyntheticBridges(i, bridgeClass, target);
     }
 
     private static void addSyntheticBridgeInjector(@Nonnull final Instrumentation i, @Nonnull final MappedClass target,
@@ -84,9 +108,13 @@ public final class BridgeSynthesiser implements Opcodes {
                     // 1.1. Detect virtual bridge methods.
                     if(m.isAnnotationPresent(BridgeMethod.class) && !Modifier.isStatic(m.getModifiers())) {
                         logger.debug("Synthesising non-static bridge {}#{}!", bridgeClass.getName(), m.getName());
-                        final var obfMethod = target.method(m.getDeclaredAnnotation(BridgeMethod.class).value());
+                        final var bridgeMethodName = m.getDeclaredAnnotation(BridgeMethod.class).value();
+                        final var obfMethod = target.method(bridgeMethodName);
 
                         final var insns = new InsnList();
+                        if(m.isAnnotationPresent(DumpASM.class)) {
+                            logger.info("Generating bridge {} -> {}", bridgeMethodName, obfMethod.obfName());
+                        }
                         final var obfDesc = obfMethod.descNoComma();
 
                         // 1.2. Synthesise param-load insns.
@@ -130,6 +158,7 @@ public final class BridgeSynthesiser implements Opcodes {
                         }));
 
                         if(m.isAnnotationPresent(DumpASM.class)) {
+                            logger.info("Dumping method bridge asm for {}#{}", bridgeClass.getName(), m.getName());
                             InsnPrinter.print(insns);
                         }
 
@@ -164,6 +193,7 @@ public final class BridgeSynthesiser implements Opcodes {
                         }));
 
                         if(m.isAnnotationPresent(DumpASM.class)) {
+                            logger.info("Dumping field bridge asm for {}#{}", bridgeClass.getName(), m.getName());
                             InsnPrinter.print(insns);
                         }
 
@@ -191,12 +221,16 @@ public final class BridgeSynthesiser implements Opcodes {
                 for(final var m : bridgeClass.getDeclaredMethods()) {
                     // 2.1. Detect static bridge methods
                     if(m.isAnnotationPresent(BridgeMethod.class) && Modifier.isStatic(m.getModifiers())) {
-                        final var obfMethod = target.method(m.getAnnotation(BridgeMethod.class).value());
+                        final var bridgeMethodName = m.getAnnotation(BridgeMethod.class).value();
+                        final var obfMethod = target.method(bridgeMethodName);
                         final var reflDesc = Method.getMethod(m).getDescriptor();
                         // 2.2. Find matching MethodNode.
                         final var targetNode = cn.methods.stream().filter(mn -> mn.desc.equals(reflDesc)).findFirst();
                         if(targetNode.isEmpty()) {
                             throw new IllegalStateException("No node for method " + m.getName() + ' ' + reflDesc);
+                        }
+                        if(m.isAnnotationPresent(DumpASM.class)) {
+                            logger.info("Generating bridge {} -> {}", bridgeMethodName, obfMethod.obfName());
                         }
 
                         final var mn = targetNode.get();
@@ -248,6 +282,7 @@ public final class BridgeSynthesiser implements Opcodes {
                         }
 
                         if(m.isAnnotationPresent(DumpASM.class)) {
+                            logger.info("Dumping method bridge asm for {}#{}", bridgeClass.getName(), m.getName());
                             InsnPrinter.print(insns);
                         }
 
@@ -290,6 +325,7 @@ public final class BridgeSynthesiser implements Opcodes {
                         }
 
                         if(m.isAnnotationPresent(DumpASM.class)) {
+                            logger.info("Dumping field bridge asm for {}#{}", bridgeClass.getName(), m.getName());
                             InsnPrinter.print(insns);
                         }
 
@@ -302,5 +338,8 @@ public final class BridgeSynthesiser implements Opcodes {
                 logger.debug("Fully redefined {}.", bridgeClass.getName());
             }
         }.redefine());
+    }
+
+    public static class Edge {
     }
 }

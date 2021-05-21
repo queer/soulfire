@@ -1,15 +1,17 @@
 package gg.amy.soulfire.example;
 
 import gg.amy.soulfire.api.Soulfire;
-import gg.amy.soulfire.api.events.event.MinecraftInit;
-import gg.amy.soulfire.api.events.event.MinecraftReady;
+import gg.amy.soulfire.api.events.event.game.MinecraftInit;
+import gg.amy.soulfire.api.events.event.game.MinecraftReady;
+import gg.amy.soulfire.api.events.event.item.ItemInteraction;
 import gg.amy.soulfire.api.minecraft.block.Block;
 import gg.amy.soulfire.api.minecraft.block.BlockProperties;
 import gg.amy.soulfire.api.minecraft.block.Material;
-import gg.amy.soulfire.api.minecraft.item.Identifier;
+import gg.amy.soulfire.api.minecraft.chat.TextComponent;
 import gg.amy.soulfire.api.minecraft.item.Item;
 import gg.amy.soulfire.api.minecraft.item.ItemCategory;
 import gg.amy.soulfire.api.minecraft.item.ItemProperties;
+import gg.amy.soulfire.api.minecraft.registry.Identifier;
 import gg.amy.soulfire.api.minecraft.registry.Registry;
 import gg.amy.soulfire.api.mod.Mod;
 import org.apache.logging.log4j.LogManager;
@@ -41,5 +43,18 @@ public class ExampleMod {
             logger.info("### MINECRAFT READY ###");
             return event;
         });
+
+        Soulfire.soulfire().bus().register(
+                ItemInteraction.class,
+                identifier -> identifier.matches("example", "test_item"),
+                event -> {
+                    logger.info("### server? {}", event.ctx().world().server());
+                    if(event.ctx().world().server()) {
+                        final var player = event.ctx().player();
+                        player.sendMessage(TextComponent.of("You just used the test item!"), true);
+                        player.sendMessage(TextComponent.of(String.format("You are at (%d, %d, %d) in %s", (int) player.x(), (int) player.y(), (int) player.z(), player.world())), false);
+                    }
+                    return event;
+                });
     }
 }

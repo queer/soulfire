@@ -1,4 +1,4 @@
-package gg.amy.soulfire.api.events.event;
+package gg.amy.soulfire.api.events.event.resource;
 
 import gg.amy.soulfire.api.minecraft.resource.SimpleReloadableResourceManager;
 

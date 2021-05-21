@@ -1,4 +1,4 @@
-package gg.amy.soulfire.api.events.event;
+package gg.amy.soulfire.api.events.event.inventory;
 
 import javax.annotation.Nonnull;
 
