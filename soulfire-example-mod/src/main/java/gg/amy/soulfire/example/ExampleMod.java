@@ -13,6 +13,7 @@ import gg.amy.soulfire.api.minecraft.item.ItemCategory;
 import gg.amy.soulfire.api.minecraft.item.ItemProperties;
 import gg.amy.soulfire.api.minecraft.registry.Identifier;
 import gg.amy.soulfire.api.minecraft.registry.Registry;
+import gg.amy.soulfire.api.minecraft.sound.Sounds;
 import gg.amy.soulfire.api.mod.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -49,10 +50,14 @@ public class ExampleMod {
                 identifier -> identifier.matches("example", "test_item"),
                 event -> {
                     logger.info("### server? {}", event.ctx().world().server());
+                    final var player = event.ctx().player();
+                    player.playSound(Sounds.playerLevelup(), 1F, 1F);
                     if(event.ctx().world().server()) {
-                        final var player = event.ctx().player();
                         player.sendMessage(TextComponent.of("You just used the test item!"), true);
-                        player.sendMessage(TextComponent.of(String.format("You are at (%d, %d, %d) in %s", (int) player.x(), (int) player.y(), (int) player.z(), player.world())), false);
+                        player.sendMessage(TextComponent.of(String.format(
+                                "You are at (%d, %d, %d) in %s",
+                                (int) player.x(), (int) player.y(), (int) player.z(), player.world()
+                        )), false);
                     }
                     return event;
                 });
