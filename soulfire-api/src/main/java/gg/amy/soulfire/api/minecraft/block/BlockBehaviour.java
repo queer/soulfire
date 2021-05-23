@@ -2,8 +2,13 @@ package gg.amy.soulfire.api.minecraft.block;
 
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeMethod;
+import gg.amy.soulfire.api.minecraft.entity.Player;
+import gg.amy.soulfire.api.minecraft.item.InteractionHand;
+import gg.amy.soulfire.api.minecraft.item.InteractionResult;
+import gg.amy.soulfire.api.minecraft.physics.BlockHitResult;
 import gg.amy.soulfire.api.minecraft.physics.CollisionContext;
 import gg.amy.soulfire.api.minecraft.physics.VoxelShape;
+import gg.amy.soulfire.api.minecraft.world.World;
 
 import javax.annotation.Nonnull;
 
@@ -30,4 +35,7 @@ public interface BlockBehaviour {
 
     @BridgeMethod("getVisualShape(net.minecraft.world.level.block.state.BlockState,net.minecraft.world.level.BlockGetter,net.minecraft.core.BlockPos,net.minecraft.world.phys.shapes.CollisionContext)")
     VoxelShape getVisualShape(@Nonnull BlockState state, @Nonnull BlockGetter getter, @Nonnull BlockPos pos, @Nonnull CollisionContext ctx);
+
+    @BridgeMethod("use(net.minecraft.world.level.block.state.BlockState,net.minecraft.world.level.Level,net.minecraft.core.BlockPos,net.minecraft.world.entity.player.Player,net.minecraft.world.InteractionHand,net.minecraft.world.phys.BlockHitResult)")
+    InteractionResult use(@Nonnull BlockState state, @Nonnull World world, @Nonnull BlockPos pos, @Nonnull Player player, @Nonnull InteractionHand hand, @Nonnull BlockHitResult result);
 }

@@ -5,15 +5,16 @@ import gg.amy.soulfire.api.events.event.game.MinecraftInit;
 import gg.amy.soulfire.api.events.event.item.ItemInteraction;
 import gg.amy.soulfire.api.minecraft.block.*;
 import gg.amy.soulfire.api.minecraft.chat.TextComponent;
-import gg.amy.soulfire.api.minecraft.item.Item;
-import gg.amy.soulfire.api.minecraft.item.ItemCategory;
-import gg.amy.soulfire.api.minecraft.item.ItemProperties;
+import gg.amy.soulfire.api.minecraft.entity.Player;
+import gg.amy.soulfire.api.minecraft.item.*;
+import gg.amy.soulfire.api.minecraft.physics.BlockHitResult;
 import gg.amy.soulfire.api.minecraft.physics.CollisionContext;
 import gg.amy.soulfire.api.minecraft.physics.VoxelShape;
 import gg.amy.soulfire.api.minecraft.physics.VoxelShapes;
 import gg.amy.soulfire.api.minecraft.registry.Identifier;
 import gg.amy.soulfire.api.minecraft.registry.Registry;
 import gg.amy.soulfire.api.minecraft.sound.Sounds;
+import gg.amy.soulfire.api.minecraft.world.World;
 import gg.amy.soulfire.api.mod.Mod;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -43,6 +44,15 @@ public class ExampleMod {
         @SuppressWarnings("NullableProblems")
         public VoxelShape getShape(@Nonnull final BlockState state, @Nonnull final BlockGetter getter, @Nonnull final BlockPos pos, @Nonnull final CollisionContext ctx) {
             return VoxelShapes.box(0, 0.5, 0, 1, 1, 1);
+        }
+
+        @Override
+        public InteractionResult use(@Nonnull final BlockState state, @Nonnull final World world, @Nonnull final BlockPos pos, @Nonnull final Player player, @Nonnull final InteractionHand hand, @Nonnull final BlockHitResult result) {
+            super.use(state, world, pos, player, hand, result);
+            if(world.server()) {
+                player.sendMessage(TextComponent.of("You just clicked the example block! Good job! :D"), true);
+            }
+            return InteractionResult.pass();
         }
     };
     private final Logger logger = LogManager.getLogger(getClass());

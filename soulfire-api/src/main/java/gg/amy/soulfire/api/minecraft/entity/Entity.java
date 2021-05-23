@@ -1,6 +1,7 @@
 package gg.amy.soulfire.api.minecraft.entity;
 
 import gg.amy.soulfire.annotations.*;
+import gg.amy.soulfire.api.minecraft.physics.EntityHitResult;
 import gg.amy.soulfire.api.minecraft.sound.Sound;
 import gg.amy.soulfire.api.minecraft.world.ClientWorld;
 import gg.amy.soulfire.api.minecraft.world.ServerWorld;
@@ -13,7 +14,7 @@ import javax.annotation.Nonnull;
  * @since 5/20/21.
  */
 @Retransforming
-@TransformAfter({World.class, ClientWorld.class, ServerWorld.class})
+@TransformAfter({World.class, ClientWorld.class, ServerWorld.class, EntityHitResult.class})
 @Bridge("net.minecraft.world.entity.Entity")
 public interface Entity {
     @BridgeMethod("playSound(net.minecraft.sounds.SoundEvent,float,float)")
