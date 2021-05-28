@@ -6,6 +6,7 @@ import gg.amy.soulfire.bytecode.*;
 import gg.amy.soulfire.bytecode.mapping.MappedClass;
 import gg.amy.soulfire.utils.AgentUtils;
 import gg.amy.soulfire.utils.InsnPrinter;
+import io.github.classgraph.AnnotationInfo;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ClassInfo;
 import org.apache.logging.log4j.LogManager;
@@ -46,7 +47,7 @@ public final class BridgeAndShimSynthesiser implements Opcodes {
                 .acceptPackages(Minecraft.class.getPackageName())
                 .enableAllInfo()
                 .scan()) {
-            final var dag = new DirectedAcyclicGraph<Class<?>, Edge>(Edge.class);
+            final var bridgeDag = new DirectedAcyclicGraph<Class<?>, Edge>(Edge.class);
 
             for(final var ci : graph.getClassesWithAnnotation(Bridge.class.getName())) {
                 final var bridgeClass = ci.loadClass();
@@ -54,17 +55,17 @@ public final class BridgeAndShimSynthesiser implements Opcodes {
                     throw new IllegalStateException(String.format("@Bridge class %s isn't an interface!", bridgeClass.getName()));
                 }
 
-                dag.addVertex(bridgeClass);
+                bridgeDag.addVertex(bridgeClass);
                 if(bridgeClass.isAnnotationPresent(TransformAfter.class)) {
                     final var after = bridgeClass.getDeclaredAnnotation(TransformAfter.class);
                     for(final Class<?> dependency : after.value()) {
-                        dag.addVertex(dependency);
-                        dag.addEdge(dependency, bridgeClass);
+                        bridgeDag.addVertex(dependency);
+                        bridgeDag.addEdge(dependency, bridgeClass);
                     }
                 }
             }
 
-            for(final Class<?> bridgeClass : dag) {
+            for(final Class<?> bridgeClass : bridgeDag) {
                 LOGGER.info("Operating on bridge class {}!", bridgeClass.getName());
                 if(Arrays.stream(bridgeClass.getDeclaredMethods()).anyMatch(m -> m.isAnnotationPresent(DumpASM.class))) {
                     LOGGER.info("Bridging {}, will be dumping asm!", bridgeClass);
@@ -73,6 +74,8 @@ public final class BridgeAndShimSynthesiser implements Opcodes {
                 bridge(i, bridgeClass);
             }
 
+            final var shimMap = new HashMap<String, ClassInfo>();
+            final var shimDag = new DirectedAcyclicGraph<String, Edge>(Edge.class);
             for(final var shim : graph.getClassesWithAnnotation(Shim.class.getName())) {
                 if(shim.isInterface()) {
                     throw new IllegalArgumentException("@Shim class" + shim + " must not be an interface!");
@@ -80,8 +83,24 @@ public final class BridgeAndShimSynthesiser implements Opcodes {
                 if(shim.getInterfaces().isEmpty()) {
                     throw new IllegalArgumentException("@Shim class " + shim + " has no interfaces!");
                 }
+                shimMap.put(shim.getName(), shim);
+                shimDag.addVertex(shim.getName());
+                final var shimAfter = shim.getAnnotationInfo(ShimAfter.class.getName());
+                if(shimAfter != null) {
+                    final var value = (String) shimAfter.getParameterValues().get(0).getValue();
+                    LOGGER.warn("Added edge: {} -> {}", shim.getName(), value);
+                    shimDag.addVertex(value);
+                    shimDag.addEdge(value, shim.getName());
+                }
+            }
 
-                shim(shim);
+            for(final String shimName : shimDag) {
+                final var shim = shimMap.get(shimName);
+                if(shim != null) {
+                    shim(shim);
+                } else {
+                    LOGGER.error("Encountered null shim: {}", shimName);
+                }
             }
         }
     }
@@ -360,8 +379,10 @@ public final class BridgeAndShimSynthesiser implements Opcodes {
         for(final ClassInfo ci : shim.getInterfaces()) {
             final var iface = ci.loadClass();
             if(iface.isAnnotationPresent(Bridge.class)) {
+                LOGGER.info("Detected interface: {}", iface);
                 bridgeMethods.addAll(detectShimmableMethods(iface));
                 for(final Class<?> inner : iface.getInterfaces()) {
+                    LOGGER.info("Detected interface: {}", inner);
                     // TODO: Recursion
                     bridgeMethods.addAll(detectShimmableMethods(inner));
                 }
@@ -371,7 +392,9 @@ public final class BridgeAndShimSynthesiser implements Opcodes {
             @Override
             protected void inject(final ClassReader cr, final ClassNode cn) {
                 final var shimTarget = ClassMap.lookup((String) shim.getAnnotationInfo(Shim.class.getName()).getParameterValues().get(0).getValue());
-                cn.superName = shimTarget.obfName();
+                if(cn.superName.contains("/")) {
+                    cn.superName = shimTarget.obfName();
+                }
                 for(final var mn : cn.methods) {
                     if(mn.name.equals("<init>")) {
                         if(mn.visibleAnnotations != null) {
@@ -423,6 +446,11 @@ public final class BridgeAndShimSynthesiser implements Opcodes {
                 for(final ShimmableMethod shimmableMethod : bridgeMethods) {
                     if(shimmableMethod.ifaceMethod.getName().contains("<")) {
                         logger.warn("Skipping synthesising constructor-like method {}#{} for {}!", shimmableMethod.owner, shimmableMethod.ifaceMethod.getName(), shim.getName());
+                        continue;
+                    }
+                    if(shimmableMethod.ifaceMethod.isAnnotationPresent(Final.class)) {
+                        logger.warn("Skipping synthesising override of final method {}#{} for {}!", shimmableMethod.owner, shimmableMethod.ifaceMethod.getName(), shim.getName());
+                        return;
                     }
 
                     final var target = shimmableMethod.target;

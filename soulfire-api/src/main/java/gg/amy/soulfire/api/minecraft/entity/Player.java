@@ -4,6 +4,7 @@ import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeMethod;
 import gg.amy.soulfire.annotations.TransformAfter;
 import gg.amy.soulfire.api.minecraft.chat.ChatComponent;
+import gg.amy.soulfire.api.minecraft.chat.TextComponent;
 
 import javax.annotation.Nonnull;
 
@@ -16,6 +17,14 @@ import javax.annotation.Nonnull;
 public interface Player extends LivingEntity {
     @BridgeMethod("displayClientMessage(net.minecraft.network.chat.Component,boolean)")
     void sendMessage(@Nonnull ChatComponent component, boolean aboveHotbar);
+
+    default void sendMessage(@Nonnull final String message) {
+        sendMessage(message, false);
+    }
+
+    default void sendMessage(@Nonnull final String message, final boolean aboveHotbar) {
+        sendMessage(TextComponent.of(message), aboveHotbar);
+    }
 
     @BridgeMethod("onSoulSpeedBlock()")
     boolean onSoulBlock();
