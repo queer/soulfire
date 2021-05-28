@@ -1,6 +1,7 @@
 package gg.amy.soulfire.api.minecraft.entity;
 
 import gg.amy.soulfire.annotations.*;
+import gg.amy.soulfire.api.minecraft.block.BlockPos;
 import gg.amy.soulfire.api.minecraft.physics.EntityHitResult;
 import gg.amy.soulfire.api.minecraft.sound.Sound;
 import gg.amy.soulfire.api.minecraft.world.ClientWorld;
@@ -50,6 +51,11 @@ public interface Entity {
     @BridgeMethod("getZ()")
     double z();
 
+    @Nonnull
     @BridgeField("level")
     World world();
+
+    @Nonnull
+    @BridgeMethod("getOnPos()")
+    BlockPos pos();
 }

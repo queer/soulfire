@@ -63,7 +63,11 @@ public class SoulfireBlock implements Block {
         final var resourceLocation = Registries.blocks().getKey(this).get().location();
         return Soulfire.soulfire().bus().fire(new BlockInteraction(
                 this, new Identifier(resourceLocation.namespace(), resourceLocation.path()),
-                world, player, hand, InteractionResult.pass()
+                world, pos, player, hand, InteractionResult.pass()
         )).result();
+    }
+
+    @Override
+    public void onPlace(@Nonnull final BlockState state, @Nonnull final World world, @Nonnull final BlockPos pos, @Nonnull final BlockState state2, final boolean a) {
     }
 }

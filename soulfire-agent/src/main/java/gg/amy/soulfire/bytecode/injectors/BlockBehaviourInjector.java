@@ -1,6 +1,7 @@
 package gg.amy.soulfire.bytecode.injectors;
 
 import com.github.hervian.reflection.Fun;
+import gg.amy.soulfire.api.minecraft.block.BlockPos;
 import gg.amy.soulfire.api.minecraft.entity.Player;
 import gg.amy.soulfire.api.minecraft.item.InteractionHand;
 import gg.amy.soulfire.api.minecraft.world.World;
@@ -36,6 +37,8 @@ public class BlockBehaviourInjector extends Injector {
                 insns.add(new TypeInsnNode(CHECKCAST, $(block.obfName())));
                 insns.add(new VarInsnNode(ALOAD, 2));
                 insns.add(new TypeInsnNode(CHECKCAST, $(World.class)));
+                insns.add(new VarInsnNode(ALOAD, 3));
+                insns.add(new TypeInsnNode(CHECKCAST, $(BlockPos.class)));
                 insns.add(new VarInsnNode(ALOAD, 4));
                 insns.add(new TypeInsnNode(CHECKCAST, $(Player.class)));
                 insns.add(new VarInsnNode(ALOAD, 5));

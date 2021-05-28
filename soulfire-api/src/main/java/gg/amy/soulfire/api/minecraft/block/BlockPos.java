@@ -2,6 +2,9 @@ package gg.amy.soulfire.api.minecraft.block;
 
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeMethod;
+import gg.amy.soulfire.api.minecraft.physics.Vec3;
+
+import javax.annotation.Nonnull;
 
 import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 
@@ -11,13 +14,21 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
  */
 @Bridge("net.minecraft.core.BlockPos")
 public interface BlockPos {
+    @Nonnull
     @BridgeMethod("<init>(int,int,int)")
     static BlockPos of(final int x, final int y, final int z) {
         return unimplemented();
     }
 
+    @Nonnull
     @BridgeMethod("<init>(double,double,double)")
     static BlockPos of(final double x, final double y, final double z) {
+        return unimplemented();
+    }
+
+    @Nonnull
+    @BridgeMethod("<init>(net.minecraft.world.phys.Vec3)")
+    static BlockPos of(@Nonnull final Vec3 vec3) {
         return unimplemented();
     }
 

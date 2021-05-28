@@ -2,6 +2,10 @@ package gg.amy.soulfire.api.minecraft.world;
 
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeField;
+import gg.amy.soulfire.annotations.BridgeMethod;
+import gg.amy.soulfire.api.minecraft.block.BlockPos;
+
+import javax.annotation.Nonnull;
 
 import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 
@@ -11,16 +15,19 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
  */
 @Bridge("net.minecraft.world.level.Level")
 public interface World {
+    @Nonnull
     @BridgeField("OVERWORLD")
     static World overworld() {
         return unimplemented();
     }
 
+    @Nonnull
     @BridgeField("NETHER")
     static World nether() {
         return unimplemented();
     }
 
+    @Nonnull
     @BridgeField("END")
     static World end() {
         return unimplemented();
@@ -35,4 +42,8 @@ public interface World {
 
     @BridgeField("thunderLevel")
     float thunderLevel();
+
+    @Nonnull
+    @BridgeMethod("getChunkAt(net.minecraft.core.BlockPos)")
+    Chunk chunkAt(@Nonnull BlockPos pos);
 }

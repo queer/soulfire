@@ -4,6 +4,7 @@ import gg.amy.soulfire.api.Soulfire;
 import gg.amy.soulfire.api.events.event.game.MinecraftInit;
 import gg.amy.soulfire.api.events.event.item.ItemInteraction;
 import gg.amy.soulfire.api.minecraft.block.*;
+import gg.amy.soulfire.api.minecraft.block.entity.TileEntity;
 import gg.amy.soulfire.api.minecraft.chat.TextComponent;
 import gg.amy.soulfire.api.minecraft.entity.Player;
 import gg.amy.soulfire.api.minecraft.item.*;
@@ -46,6 +47,10 @@ public class ExampleMod {
                 player.sendMessage("You just clicked the example block! Good job! :D", true);
             }
             return InteractionResult.pass();
+        }
+
+        @Override
+        public void onPlace(@Nonnull final BlockState state, @Nonnull final World world, @Nonnull final BlockPos pos, @Nonnull final BlockState state2, final boolean a) {
         }
     };
     private final Logger logger = LogManager.getLogger(getClass());

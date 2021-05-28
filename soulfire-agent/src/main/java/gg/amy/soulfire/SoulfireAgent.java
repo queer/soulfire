@@ -25,14 +25,11 @@ import java.util.Set;
  */
 public final class SoulfireAgent {
     private static final Logger LOGGER = LogManager.getLogger();
-    @SuppressWarnings("PublicField")
-    public static Instrumentation I;
 
     private SoulfireAgent() {
     }
 
     public static void premain(@Nonnull final String agentArgs, @Nonnull final Instrumentation i) {
-        I = i;
         try {
             LOGGER.info("Opening up java.lang modules...");
             i.redefineModule(String.class.getModule(), Set.of(), Map.of(), Map.of("java.lang", Set.of(SoulfireAgent.class.getModule())), Set.of(), Map.of());
@@ -53,7 +50,8 @@ public final class SoulfireAgent {
                     new ResourceKeyInjector(),
                     new SimpleReloadableResourceManagerInjector(),
                     new CreativeModeInventoryScreenInjector(),
-                    new ItemInjector()
+                    new ItemInjector(),
+                    new BlockBehaviourInjector()
             );
             final var redefiners = List.<Redefiner>of(
                     new SoulfireRedefiner()

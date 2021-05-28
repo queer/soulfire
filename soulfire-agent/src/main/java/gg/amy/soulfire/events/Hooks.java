@@ -10,6 +10,7 @@ import gg.amy.soulfire.api.events.event.item.ItemInteraction;
 import gg.amy.soulfire.api.events.event.resource.ResourceInit;
 import gg.amy.soulfire.api.events.event.resource.ResourceManagerReload;
 import gg.amy.soulfire.api.minecraft.block.Block;
+import gg.amy.soulfire.api.minecraft.block.BlockPos;
 import gg.amy.soulfire.api.minecraft.entity.Player;
 import gg.amy.soulfire.api.minecraft.item.InteractionHand;
 import gg.amy.soulfire.api.minecraft.item.InteractionResult;
@@ -68,11 +69,13 @@ public final class Hooks {
     }
 
     @SuppressWarnings("UnusedReturnValue")
-    public static InteractionResult fireBlockUse(@Nonnull final Block block, @Nonnull final World world, @Nonnull final Player player, @Nonnull final InteractionHand hand) {
+    public static InteractionResult fireBlockUse(@Nonnull final Block block, @Nonnull final World world,
+                                                 @Nonnull final BlockPos pos, @Nonnull final Player player,
+                                                 @Nonnull final InteractionHand hand) {
         final var resourceLocation = Registries.blocks().getKey(block).get().location();
         return Soulfire.soulfire().bus().fire(new BlockInteraction(
                 block, new Identifier(resourceLocation.namespace(), resourceLocation.path()),
-                world, player, hand, InteractionResult.pass()
+                world, pos, player, hand, InteractionResult.pass()
         )).result();
     }
 }

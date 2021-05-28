@@ -33,7 +33,7 @@ public final class BridgeAndShimSynthesiser implements Opcodes {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Set<Class<?>> PRIMITIVE_CLASSES = Set.of(
             boolean.class, byte.class, short.class, char.class, int.class, long.class,
-            float.class, double.class
+            float.class, double.class, void.class
     );
 
     private BridgeAndShimSynthesiser() {
