@@ -4,12 +4,16 @@ import gg.amy.soulfire.api.Soulfire;
 import gg.amy.soulfire.api.events.event.game.MinecraftInit;
 import gg.amy.soulfire.api.events.event.item.ItemInteraction;
 import gg.amy.soulfire.api.minecraft.block.*;
-import gg.amy.soulfire.api.minecraft.block.entity.TileEntity;
+import gg.amy.soulfire.api.minecraft.block.entity.ChestTileEntity;
+import gg.amy.soulfire.api.minecraft.block.entity.SoulfireTileEntity;
+import gg.amy.soulfire.api.minecraft.block.entity.TileEntityType;
+import gg.amy.soulfire.api.minecraft.block.entity.TileEntityTypeBuilder;
 import gg.amy.soulfire.api.minecraft.chat.TextComponent;
 import gg.amy.soulfire.api.minecraft.entity.Player;
 import gg.amy.soulfire.api.minecraft.item.*;
 import gg.amy.soulfire.api.minecraft.physics.BlockHitResult;
 import gg.amy.soulfire.api.minecraft.registry.Identifier;
+import gg.amy.soulfire.api.minecraft.registry.Registries;
 import gg.amy.soulfire.api.minecraft.registry.Registry;
 import gg.amy.soulfire.api.minecraft.sound.Sounds;
 import gg.amy.soulfire.api.minecraft.world.World;
@@ -51,6 +55,9 @@ public class ExampleMod {
 
         @Override
         public void onPlace(@Nonnull final BlockState state, @Nonnull final World world, @Nonnull final BlockPos pos, @Nonnull final BlockState state2, final boolean a) {
+            final var entity = ChestTileEntity.create();
+            entity.setWorldAndPos(world, pos);
+            world.addTileEntity(entity);
         }
     };
     private final Logger logger = LogManager.getLogger(getClass());
@@ -61,6 +68,7 @@ public class ExampleMod {
 
             Registry.registerItem(new Identifier("example", "test_item"), TEST_ITEM);
             Registry.registerBlock(new Identifier("example", "test_block"), TEST_BLOCK);
+            Registry.register(Registries.blockEntityTypes(), new Identifier("example", "test_tile_entity"), TileEntityTypeBuilder.of(ExampleTileEntity::new, new Block[0]).build(null));
 
             logger.info("############################ Mod init finished");
 
@@ -82,5 +90,11 @@ public class ExampleMod {
                     }
                     return event;
                 });
+    }
+
+    public static class ExampleTileEntity extends SoulfireTileEntity<ChestTileEntity> {
+        public ExampleTileEntity() {
+            super(TileEntityType.chest());
+        }
     }
 }

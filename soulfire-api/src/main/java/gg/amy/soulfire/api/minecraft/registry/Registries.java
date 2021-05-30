@@ -5,6 +5,7 @@ import gg.amy.soulfire.annotations.BridgeField;
 import gg.amy.soulfire.annotations.BridgeMethod;
 import gg.amy.soulfire.annotations.Nontransforming;
 import gg.amy.soulfire.api.minecraft.block.Block;
+import gg.amy.soulfire.api.minecraft.block.entity.TileEntityType;
 import gg.amy.soulfire.api.minecraft.item.Item;
 
 import javax.annotation.Nonnull;
@@ -67,7 +68,7 @@ public interface Registries {
     }
 
     @BridgeField("BLOCK_ENTITY_TYPE")
-    static Registry blockEntityTypes() {
+    static Registry<TileEntityType<?>> blockEntityTypes() {
         return unimplemented();
     }
 

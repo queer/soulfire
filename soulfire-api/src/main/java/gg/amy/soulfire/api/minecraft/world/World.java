@@ -3,7 +3,9 @@ package gg.amy.soulfire.api.minecraft.world;
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeField;
 import gg.amy.soulfire.annotations.BridgeMethod;
+import gg.amy.soulfire.annotations.DumpASM;
 import gg.amy.soulfire.api.minecraft.block.BlockPos;
+import gg.amy.soulfire.api.minecraft.block.entity.TileEntity;
 
 import javax.annotation.Nonnull;
 
@@ -46,4 +48,7 @@ public interface World {
     @Nonnull
     @BridgeMethod("getChunkAt(net.minecraft.core.BlockPos)")
     Chunk chunkAt(@Nonnull BlockPos pos);
+
+    @BridgeMethod("addBlockEntity(net.minecraft.world.level.block.entity.BlockEntity)")
+    boolean addTileEntity(@Nonnull TileEntity entity);
 }

@@ -1,6 +1,8 @@
 package gg.amy.soulfire.api.minecraft.block.entity;
 
+import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeField;
+import gg.amy.soulfire.annotations.DumpASM;
 
 import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
 
@@ -8,14 +10,16 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
  * @author amy
  * @since 5/28/21.
  */
-public interface TileEntityType {
+@Bridge("net.minecraft.world.level.block.entity.BlockEntityType")
+public interface TileEntityType<T extends TileEntity> {
     @BridgeField("FURNACE")
-    static TileEntityType furnace() {
+    static TileEntityType<FurnaceTileEntity> furnace() {
         return unimplemented();
     }
 
+    @DumpASM
     @BridgeField("CHEST")
-    static TileEntityType chest() {
+    static TileEntityType<ChestTileEntity> chest() {
         return unimplemented();
     }
 
