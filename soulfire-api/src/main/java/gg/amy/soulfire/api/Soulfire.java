@@ -1,6 +1,7 @@
 package gg.amy.soulfire.api;
 
 import gg.amy.soulfire.api.events.EventBus;
+import gg.amy.soulfire.api.thesaurus.Thesaurus;
 
 import javax.annotation.Nonnull;
 import java.io.File;
@@ -50,4 +51,9 @@ public interface Soulfire {
     // TODO: Use this
     @Nonnull
     File configDir();
+
+    /**
+     * @return The thesaurus used for item/block mappings.
+     */
+    Thesaurus thesaurus();
 }

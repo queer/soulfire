@@ -2,7 +2,9 @@ package gg.amy.soulfire.api.minecraft.block;
 
 import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeMethod;
+import gg.amy.soulfire.annotations.TransformAfter;
 import gg.amy.soulfire.api.minecraft.physics.Vec3;
+import gg.amy.soulfire.api.minecraft.physics.Vec3i;
 
 import javax.annotation.Nonnull;
 
@@ -12,8 +14,9 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
  * @author amy
  * @since 5/19/21.
  */
+@TransformAfter(Vec3i.class)
 @Bridge("net.minecraft.core.BlockPos")
-public interface BlockPos {
+public interface BlockPos extends Vec3i {
     @Nonnull
     @BridgeMethod("<init>(int,int,int)")
     static BlockPos of(final int x, final int y, final int z) {
@@ -31,16 +34,6 @@ public interface BlockPos {
     static BlockPos of(@Nonnull final Vec3 vec3) {
         return unimplemented();
     }
-
-    // TODO: These are supposed to take longs as params?
-//    @BridgeMethod("getX()")
-//    int x();
-//
-//    @BridgeMethod("getY()")
-//    int y();
-//
-//    @BridgeMethod("getZ()")
-//    int z();
 
     @BridgeMethod("above()")
     BlockPos above();

@@ -2,6 +2,7 @@ package gg.amy.soulfire.api;
 
 import gg.amy.soulfire.api.events.EventBus;
 import gg.amy.soulfire.api.minecraft.Minecraft;
+import gg.amy.soulfire.api.thesaurus.Thesaurus;
 import gg.amy.soulfire.events.SoulfireEventBus;
 import gg.amy.soulfire.loader.ModLoader;
 import org.apache.logging.log4j.LogManager;
@@ -21,6 +22,7 @@ public final class SoulfireImpl implements Soulfire {
 
     private final EventBus bus = new SoulfireEventBus();
     private final ModLoader modLoader = new ModLoader();
+    private final Thesaurus thesaurus = new ThesaurusImpl();
 
     private SoulfireImpl() {
     }
@@ -62,6 +64,11 @@ public final class SoulfireImpl implements Soulfire {
     @Override
     public File configDir() {
         return new File(baseDir(), "config");
+    }
+
+    @Override
+    public Thesaurus thesaurus() {
+        return thesaurus;
     }
 
     @Nonnull

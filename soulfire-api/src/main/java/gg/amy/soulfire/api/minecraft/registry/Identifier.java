@@ -1,5 +1,7 @@
 package gg.amy.soulfire.api.minecraft.registry;
 
+import gg.amy.soulfire.api.minecraft.registry.Registries.ResourceLocation;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -14,5 +16,9 @@ public record Identifier(@Nonnull String namespace, @Nonnull String id) {
     @Override
     public String toString() {
         return String.format("%s:%s", namespace, id);
+    }
+
+    public static Identifier of(@Nonnull final ResourceLocation location) {
+        return new Identifier(location.namespace(), location.path());
     }
 }

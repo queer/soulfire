@@ -1,6 +1,7 @@
 package gg.amy.soulfire.loader;
 
 import gg.amy.soulfire.api.Soulfire;
+import gg.amy.soulfire.api.ThesaurusImpl;
 import gg.amy.soulfire.api.events.event.game.MinecraftInit;
 import gg.amy.soulfire.api.events.event.game.MinecraftReady;
 import gg.amy.soulfire.api.events.event.resource.ResourceManagerReload;
@@ -35,6 +36,8 @@ public final class ModLoader {
             if(!init) {
                 init = true;
                 logger.info("Initialising soulfire from Minecraft gamedir {}", Minecraft.getInstance().gameDir());
+                // TODO: Better way of doing this
+                ((ThesaurusImpl) Soulfire.soulfire().thesaurus()).setup();
 
                 locateModJars();
                 loadMods();

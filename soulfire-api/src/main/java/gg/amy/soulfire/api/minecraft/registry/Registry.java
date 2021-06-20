@@ -29,12 +29,12 @@ public interface Registry<T> extends IdMap<T> {
     }
 
     @BridgeMethod("register(net.minecraft.core.Registry,java.lang.String,java.lang.Object)")
-    static <E> E register(@Nonnull final Registry<E> registry, @Nonnull final String identifier, @Nonnull final E obj) {
+    private static <E> E register(@Nonnull final Registry<E> registry, @Nonnull final String identifier, @Nonnull final E obj) {
         return unimplemented();
     }
 
     @BridgeMethod("register(net.minecraft.core.Registry,net.minecraft.resources.ResourceLocation,java.lang.Object)")
-    static <E> E register(@Nonnull final Registry<E> registry, @Nonnull final ResourceLocation identifier, @Nonnull final E obj) {
+    private static <E> E register(@Nonnull final Registry<E> registry, @Nonnull final ResourceLocation identifier, @Nonnull final E obj) {
         return unimplemented();
     }
 

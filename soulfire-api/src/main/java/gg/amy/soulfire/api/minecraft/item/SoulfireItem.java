@@ -25,7 +25,7 @@ public class SoulfireItem implements Item {
         // TODO: Figure out removing code duplication between this and hooks
         final var resourceLocation = Registries.items().getKey(this).get().location();
         return Soulfire.soulfire().bus().fire(new ItemInteraction(
-                this, new Identifier(resourceLocation.namespace(), resourceLocation.path()),
+                this, Identifier.of(resourceLocation),
                 ctx, InteractionResult.pass()
         )).result();
     }

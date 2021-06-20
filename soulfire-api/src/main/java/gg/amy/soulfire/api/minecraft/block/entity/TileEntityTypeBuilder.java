@@ -15,8 +15,9 @@ import static gg.amy.soulfire.api.YouFuckedUp.unimplemented;
  * @author amy
  * @since 5/28/21.
  */
+// TODO: Generates broken bytecode
 @SuppressWarnings("InterfaceMayBeAnnotatedFunctional")
-@Bridge("net.minecraft.world.level.block.entity.BlockEntityType$Builder")
+//@Bridge("net.minecraft.world.level.block.entity.BlockEntityType$Builder")
 public interface TileEntityTypeBuilder<T extends TileEntity> {
     @Nonnull
     @BridgeMethod("of(java.util.function.Supplier,net.minecraft.world.level.block.Block[])")

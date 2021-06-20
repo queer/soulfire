@@ -4,6 +4,7 @@ import gg.amy.soulfire.annotations.Bridge;
 import gg.amy.soulfire.annotations.BridgeMethod;
 import gg.amy.soulfire.api.minecraft.block.BlockPos;
 import gg.amy.soulfire.api.minecraft.block.entity.TileEntity;
+import gg.amy.soulfire.api.minecraft.entity.Entity;
 
 import javax.annotation.Nonnull;
 
@@ -15,4 +16,7 @@ import javax.annotation.Nonnull;
 public interface Chunk {
     @BridgeMethod("createBlockEntity(net.minecraft.core.BlockPos)")
     TileEntity createTileEntity(@Nonnull BlockPos pos);
+
+    @BridgeMethod("addEntity(net.minecraft.world.entity.Entity)")
+    void addEntity(@Nonnull final Entity entity);
 }

@@ -2,6 +2,7 @@ package gg.amy.soulfire.bytecode.injectors;
 
 import com.github.hervian.reflection.Fun;
 import gg.amy.soulfire.api.minecraft.block.BlockPos;
+import gg.amy.soulfire.api.minecraft.block.BlockState;
 import gg.amy.soulfire.api.minecraft.entity.Player;
 import gg.amy.soulfire.api.minecraft.item.InteractionHand;
 import gg.amy.soulfire.api.minecraft.world.World;
@@ -23,12 +24,13 @@ public class BlockBehaviourInjector extends Injector {
     private final MappedClass itemInteraction = ClassMap.lookup("net.minecraft.world.InteractionResult");
 
     public BlockBehaviourInjector() {
-        super(ClassMap.lookup("net.minecraft.world.level.block.state.BlockBehaviour").obfName());
+        super(ClassMap.lookup("net.minecraft.world.level.block.state.BlockBehaviour").obfName(), true);
     }
 
     @Override
     protected void inject(final ClassReader cr, final ClassNode cn) {
         final var use = blockBehaviour.method("use(net.minecraft.world.level.block.state.BlockState,net.minecraft.world.level.Level,net.minecraft.core.BlockPos,net.minecraft.world.entity.player.Player,net.minecraft.world.InteractionHand,net.minecraft.world.phys.BlockHitResult)");
+        final var place = blockBehaviour.method("onPlace(net.minecraft.world.level.block.state.BlockState,net.minecraft.world.level.Level,net.minecraft.core.BlockPos,net.minecraft.world.level.block.state.BlockState,boolean)");
         for(final var mn : cn.methods) {
             if(mn.name.equals(use.obfName()) && mn.desc.equals(use.descNoComma())) {
                 final var insns = new InsnList();
@@ -43,9 +45,27 @@ public class BlockBehaviourInjector extends Injector {
                 insns.add(new TypeInsnNode(CHECKCAST, $(Player.class)));
                 insns.add(new VarInsnNode(ALOAD, 5));
                 insns.add(new TypeInsnNode(CHECKCAST, $(InteractionHand.class)));
-                insns.add(new MethodInsnNode(INVOKESTATIC, $(Hooks.class), Fun.toMethod(Hooks::fireBlockUse).getName(), Method.getMethod(Fun.toMethod(Hooks::fireBlockUse)).getDescriptor()));
+                insns.add(new MethodInsnNode(INVOKESTATIC, $(Hooks.class), Fun.getName(Hooks::fireBlockUse), Method.getMethod(Fun.toMethod(Hooks::fireBlockUse)).getDescriptor()));
                 insns.add(new TypeInsnNode(CHECKCAST, $(itemInteraction.obfName())));
                 insns.add(new InsnNode(ARETURN));
+
+                mn.instructions.clear();
+                mn.instructions.add(insns);
+            }
+
+            if(mn.name.equals(place.obfName()) && mn.desc.equals(place.descNoComma())) {
+                final var insns = new InsnList();
+
+                insns.add(new VarInsnNode(ALOAD, 0));
+                insns.add(new TypeInsnNode(CHECKCAST, $(block.obfName())));
+                insns.add(new VarInsnNode(ALOAD, 2));
+                insns.add(new TypeInsnNode(CHECKCAST, $(World.class)));
+                insns.add(new VarInsnNode(ALOAD, 3));
+                insns.add(new TypeInsnNode(CHECKCAST, $(BlockPos.class)));
+                insns.add(new VarInsnNode(ALOAD, 4));
+                insns.add(new TypeInsnNode(CHECKCAST, $(BlockState.class)));
+                insns.add(new MethodInsnNode(INVOKESTATIC, $(Hooks.class), Fun.getName(Hooks::fireBlockPlace), Method.getMethod(Fun.toMethod(Hooks::fireBlockPlace)).getDescriptor()));
+                insns.add(new InsnNode(RETURN));
 
                 mn.instructions.clear();
                 mn.instructions.add(insns);

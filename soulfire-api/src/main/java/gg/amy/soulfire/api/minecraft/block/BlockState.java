@@ -7,5 +7,5 @@ import gg.amy.soulfire.annotations.Bridge;
  * @since 5/19/21.
  */
 @Bridge("net.minecraft.world.level.block.state.BlockState")
-public interface BlockState {
+public interface BlockState extends BlockStateBase {
 }

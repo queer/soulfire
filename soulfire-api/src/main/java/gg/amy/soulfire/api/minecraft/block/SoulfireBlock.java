@@ -62,7 +62,7 @@ public class SoulfireBlock implements Block {
         // TODO: Figure out reducing duplication between this and hooks
         final var resourceLocation = Registries.blocks().getKey(this).get().location();
         return Soulfire.soulfire().bus().fire(new BlockInteraction(
-                this, new Identifier(resourceLocation.namespace(), resourceLocation.path()),
+                this, Identifier.of(resourceLocation),
                 world, pos, player, hand, InteractionResult.pass()
         )).result();
     }

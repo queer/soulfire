@@ -17,6 +17,9 @@ public abstract class BytecodeMangler implements Opcodes {
     protected final String classToInject;
 
     protected BytecodeMangler(final String classToInject) {
+        if(classToInject == null) {
+            throw new IllegalStateException();
+        }
         this.classToInject = $(classToInject);
     }
 

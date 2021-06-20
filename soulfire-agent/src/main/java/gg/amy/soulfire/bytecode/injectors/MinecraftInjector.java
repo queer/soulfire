@@ -1,11 +1,13 @@
 package gg.amy.soulfire.bytecode.injectors;
 
+import com.github.hervian.reflection.Fun;
 import gg.amy.soulfire.api.Soulfire;
 import gg.amy.soulfire.bytecode.ClassMap;
 import gg.amy.soulfire.bytecode.Injector;
 import gg.amy.soulfire.bytecode.mapping.MappedClass;
 import gg.amy.soulfire.events.Hooks;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.commons.Method;
 import org.objectweb.asm.tree.*;
 
 /**
@@ -22,6 +24,7 @@ public class MinecraftInjector extends Injector {
 
     @Override
     protected void inject(final ClassReader cr, final ClassNode cn) {
+        final var tick = minecraft.method("tick()");
         for(final var mn : cn.methods) {
             if(mn.name.equals("<init>")) {
                 AbstractInsnNode putGameDir = null;
@@ -74,6 +77,12 @@ public class MinecraftInjector extends Injector {
                     insns.add(new MethodInsnNode(INVOKESTATIC, $(Hooks.class), "fireGameLoaded", "()V", false));
                     mn.instructions.insertBefore(ret, insns);
                 }
+            }
+
+            if(mn.name.equals(tick.obfName()) && mn.desc.equals(tick.descNoComma())) {
+                final var insns = new InsnList();
+                insns.add(new MethodInsnNode(INVOKESTATIC, $(Hooks.class), Fun.getName(Hooks::fireTick), Method.getMethod(Fun.toMethod(Hooks::fireTick)).getDescriptor(), false));
+                mn.instructions.insert(insns);
             }
         }
     }
